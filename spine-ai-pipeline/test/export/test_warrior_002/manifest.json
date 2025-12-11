@@ -1,0 +1,18 @@
+{
+  "character_id": "test_warrior_002",
+  "type": "spine",
+  "files": [
+    {
+      "name": "skeleton.json",
+      "size": 4795
+    }
+  ],
+  "animations": [
+    "idle",
+    "run",
+    "attack1",
+    "attack2",
+    "hit",
+    "die"
+  ]
+}

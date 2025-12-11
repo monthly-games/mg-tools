@@ -1,0 +1,274 @@
+{
+  "skeleton": {
+    "hash": "",
+    "spine": "4.1",
+    "x": 0,
+    "y": 0,
+    "width": 512,
+    "height": 512
+  },
+  "bones": [
+    {
+      "name": "root",
+      "parent": null
+    },
+    {
+      "name": "hip",
+      "parent": "root"
+    },
+    {
+      "name": "spine",
+      "parent": "root"
+    },
+    {
+      "name": "chest",
+      "parent": "root"
+    },
+    {
+      "name": "neck",
+      "parent": "root"
+    },
+    {
+      "name": "head",
+      "parent": "root"
+    },
+    {
+      "name": "shoulder_L",
+      "parent": "root"
+    },
+    {
+      "name": "arm_L",
+      "parent": "root"
+    },
+    {
+      "name": "forearm_L",
+      "parent": "root"
+    },
+    {
+      "name": "hand_L",
+      "parent": "root"
+    },
+    {
+      "name": "shoulder_R",
+      "parent": "root"
+    },
+    {
+      "name": "arm_R",
+      "parent": "root"
+    },
+    {
+      "name": "forearm_R",
+      "parent": "root"
+    },
+    {
+      "name": "hand_R",
+      "parent": "root"
+    },
+    {
+      "name": "thigh_L",
+      "parent": "root"
+    },
+    {
+      "name": "shin_L",
+      "parent": "root"
+    },
+    {
+      "name": "foot_L",
+      "parent": "root"
+    },
+    {
+      "name": "thigh_R",
+      "parent": "root"
+    },
+    {
+      "name": "shin_R",
+      "parent": "root"
+    },
+    {
+      "name": "foot_R",
+      "parent": "root"
+    }
+  ],
+  "slots": [
+    {
+      "name": "head",
+      "bone": "head",
+      "attachment": "head"
+    },
+    {
+      "name": "body",
+      "bone": "body",
+      "attachment": "body"
+    },
+    {
+      "name": "arm_L",
+      "bone": "arm_L",
+      "attachment": "arm_L"
+    },
+    {
+      "name": "arm_R",
+      "bone": "arm_R",
+      "attachment": "arm_R"
+    },
+    {
+      "name": "leg_L",
+      "bone": "thigh_L",
+      "attachment": "leg_L"
+    },
+    {
+      "name": "leg_R",
+      "bone": "thigh_R",
+      "attachment": "leg_R"
+    },
+    {
+      "name": "weapon",
+      "bone": "hand_R",
+      "attachment": "weapon"
+    }
+  ],
+  "skins": {
+    "default": {}
+  },
+  "animations": {
+    "idle": {
+      "bones": {
+        "body": {
+          "rotate": [
+            {
+              "time": 0,
+              "angle": 0
+            },
+            {
+              "time": 0.5,
+              "angle": 2
+            },
+            {
+              "time": 1.0,
+              "angle": 0
+            }
+          ]
+        }
+      }
+    },
+    "run": {
+      "bones": {
+        "leg_L": {
+          "rotate": [
+            {
+              "time": 0,
+              "angle": -30
+            },
+            {
+              "time": 0.3,
+              "angle": 30
+            },
+            {
+              "time": 0.6,
+              "angle": -30
+            }
+          ]
+        },
+        "leg_R": {
+          "rotate": [
+            {
+              "time": 0,
+              "angle": 30
+            },
+            {
+              "time": 0.3,
+              "angle": -30
+            },
+            {
+              "time": 0.6,
+              "angle": 30
+            }
+          ]
+        }
+      }
+    },
+    "attack1": {
+      "bones": {
+        "arm_R": {
+          "rotate": [
+            {
+              "time": 0,
+              "angle": 0
+            },
+            {
+              "time": 0.15,
+              "angle": -90
+            },
+            {
+              "time": 0.25,
+              "angle": 45
+            },
+            {
+              "time": 0.5,
+              "angle": 0
+            }
+          ]
+        }
+      }
+    },
+    "attack2": {
+      "bones": {
+        "arm_R": {
+          "rotate": [
+            {
+              "time": 0,
+              "angle": 0
+            },
+            {
+              "time": 0.15,
+              "angle": -90
+            },
+            {
+              "time": 0.25,
+              "angle": 45
+            },
+            {
+              "time": 0.5,
+              "angle": 0
+            }
+          ]
+        }
+      }
+    },
+    "hit": {
+      "bones": {
+        "body": {
+          "rotate": [
+            {
+              "time": 0,
+              "angle": 0
+            },
+            {
+              "time": 0.15,
+              "angle": 2
+            },
+            {
+              "time": 0.3,
+              "angle": 0
+            }
+          ]
+        }
+      }
+    },
+    "die": {
+      "bones": {
+        "root": {
+          "rotate": [
+            {
+              "time": 0,
+              "angle": 0
+            },
+            {
+              "time": 1.0,
+              "angle": 90
+            }
+          ]
+        }
+      }
+    }
+  }
+}

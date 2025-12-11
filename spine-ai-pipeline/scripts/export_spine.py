@@ -115,10 +115,10 @@ def main():
     # 에셋 복사
     result = copy_spine_assets(spine_dir, target_dir)
     if not result.get("success"):
-        console.print("[red]✗ 출력 실패[/red]")
+        console.print("[red][FAIL] Export failed[/red]")
         return
 
-    console.print(f"[green]✓ 파일 복사 완료: {len(result.get('files', []))}개[/green]")
+    console.print(f"[green][OK] Files copied: {len(result.get('files', []))}[/green]")
 
     # 이미지 최적화
     if args.optimize:
@@ -130,9 +130,9 @@ def main():
 
     # 매니페스트 생성
     manifest = create_manifest(character_id, target_dir)
-    console.print(f"[green]✓ 매니페스트 생성: {len(manifest['animations'])}개 애니메이션[/green]")
+    console.print(f"[green][OK] Manifest created: {len(manifest['animations'])} animations[/green]")
 
-    console.print(f"[green]✓ 출력 완료: {target_dir}[/green]")
+    console.print(f"[green][OK] Export complete: {target_dir}[/green]")
 
 
 if __name__ == "__main__":

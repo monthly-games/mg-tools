@@ -170,10 +170,10 @@ def main():
     result = add_animations_to_spine(spine_json, animations)
 
     if result.get("success"):
-        console.print(f"[green]✓ 애니메이션 추가 완료[/green]")
-        console.print(f"[green]  추가됨: {', '.join(result.get('added', []))}[/green]")
+        console.print(f"[green][OK] Animations added[/green]")
+        console.print(f"[green]  Added: {', '.join(result.get('added', []))}[/green]")
     else:
-        console.print("[red]✗ 애니메이션 추가 실패[/red]")
+        console.print("[red][FAIL] Animation failed[/red]")
 
 
 if __name__ == "__main__":

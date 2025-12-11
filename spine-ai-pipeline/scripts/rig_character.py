@@ -149,10 +149,10 @@ def main():
         result = generate_local(parts_dir, output_dir, args.preset)
 
     if result.get("success"):
-        console.print(f"[green]✓ 리깅 완료: {result.get('output')}[/green]")
-        console.print(f"[green]  본: {result.get('bones')}개, 슬롯: {result.get('slots')}개[/green]")
+        console.print(f"[green][OK] Rigging complete: {result.get('output')}[/green]")
+        console.print(f"[green]  Bones: {result.get('bones')}, Slots: {result.get('slots')}[/green]")
     else:
-        console.print("[red]✗ 리깅 실패[/red]")
+        console.print("[red][FAIL] Rigging failed[/red]")
 
 
 if __name__ == "__main__":
