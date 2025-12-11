@@ -1,0 +1,53 @@
+{
+  "styles": {
+    "pixel_anime": {
+      "prompt_prefix": "pixel art anime style",
+      "negative_prompt": "realistic, 3d, photograph",
+      "steps": 30,
+      "cfg_scale": 7
+    },
+    "chibi": {
+      "prompt_prefix": "chibi style, cute, big head",
+      "negative_prompt": "realistic, detailed face",
+      "steps": 25,
+      "cfg_scale": 8
+    },
+    "semi_realistic": {
+      "prompt_prefix": "semi-realistic anime style, detailed",
+      "negative_prompt": "low quality, blurry",
+      "steps": 40,
+      "cfg_scale": 7
+    }
+  },
+  "rig_types": {
+    "humanoid": {
+      "bones": ["root", "hip", "spine", "chest", "neck", "head",
+                "shoulder_L", "arm_L", "forearm_L", "hand_L",
+                "shoulder_R", "arm_R", "forearm_R", "hand_R",
+                "thigh_L", "shin_L", "foot_L",
+                "thigh_R", "shin_R", "foot_R"],
+      "constraints": ["ik_arm_L", "ik_arm_R", "ik_leg_L", "ik_leg_R"]
+    },
+    "monster": {
+      "bones": ["root", "body", "head", "tail",
+                "leg_FL", "leg_FR", "leg_BL", "leg_BR"],
+      "constraints": []
+    },
+    "simple": {
+      "bones": ["root", "body", "head"],
+      "constraints": []
+    }
+  },
+  "animations": {
+    "combat": ["idle", "run", "attack1", "attack2", "hit", "die"],
+    "npc": ["idle", "walk", "talk", "gesture"],
+    "monster": ["idle", "move", "attack", "hit", "die"],
+    "ui_character": ["idle", "happy", "sad", "surprised"]
+  },
+  "output_settings": {
+    "atlas_max_size": 2048,
+    "scale": 1.0,
+    "fps": 30,
+    "format": "json"
+  }
+}
