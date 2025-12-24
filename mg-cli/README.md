@@ -45,7 +45,7 @@ python -m mg-cli status --type jrpg_level_a -v
 ## Firebase 설정
 
 ```bash
-# 단일 게임 Firebase 초기화
+# 단일 게임 Firebase 초기화 (템플릿 생성)
 python -m mg-cli firebase init --game 0001
 
 # 전체 게임 Firebase 초기화
@@ -53,6 +53,31 @@ python -m mg-cli firebase init --all
 
 # Firebase 상태 확인
 python -m mg-cli firebase status
+
+# Firebase 프로젝트 생성 (Firebase CLI 필요)
+python -m mg-cli firebase create --game 0001
+
+# 전체 게임 프로젝트 생성 (배치)
+python -m mg-cli firebase create --all --batch-size 5
+
+# FlutterFire 설정 (실제 API 키 발급)
+python -m mg-cli firebase configure --game 0001
+
+# Firebase 프로젝트 목록 조회
+python -m mg-cli firebase list
+```
+
+### 사전 요구사항 (Firebase 프로젝트 생성)
+
+```bash
+# Firebase CLI 설치
+npm install -g firebase-tools
+
+# FlutterFire CLI 설치
+dart pub global activate flutterfire_cli
+
+# Firebase 로그인
+firebase login
 ```
 
 ## 광고 SDK 설정
@@ -202,3 +227,8 @@ batch:
 - [x] Phase 5: CI/CD 도구
 - [x] Phase 6: Analytics/마케팅 도구
 - [x] Phase 7: Infra 구성 도구
+- [x] Phase 8: Firebase CLI/FlutterFire 연동
+
+## 참고 문서
+
+- [게임 서비스 운영 가이드](../docs/game_service_operations_guide.md) - Firebase, Ads, Analytics, Marketing 구성 가이드

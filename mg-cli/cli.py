@@ -231,6 +231,125 @@ def firebase_status(ctx, game):
             click.echo(f"  ... and {len(not_ready) - 10} more")
 
 
+@firebase.command("create")
+@click.option("--game", "-g", help="Specific game ID (e.g., 0001)")
+@click.option("--all", "all_games", is_flag=True, help="Create for all games")
+@click.option("--batch-size", default=5, help="Batch size for rate limiting")
+@click.pass_context
+def firebase_create(ctx, game, all_games, batch_size):
+    """Create Firebase project(s) via Firebase CLI"""
+    scanner: GameScanner = ctx.obj["scanner"]
+    config = ctx.obj["config"]
+    dry_run = config.is_dry_run
+
+    service = FirebaseService(config)
+
+    # Check CLI availability
+    available, msg = service.check_cli_available()
+    if not available:
+        click.echo(f"[ERROR] {msg}")
+        return
+    click.echo(f"[OK] {msg}")
+
+    if not game and not all_games:
+        click.echo("Error: Specify --game or --all")
+        return
+
+    if game:
+        game_info = scanner.get_game(game)
+        if not game_info or not game_info.exists:
+            click.echo(f"Game {game} not found")
+            return
+
+        click.echo(f"\nCreating Firebase project for {game_info.name}...")
+        success, msg = service.create_and_configure(game_info, dry_run)
+        status = "[OK]" if success else "[FAIL]"
+        click.echo(f"  {status} {msg}")
+    else:
+        games = scanner.filter_games()
+        click.echo(f"\nCreating Firebase projects for {len(games)} games (batch size: {batch_size})...")
+
+        import time
+        for i, g in enumerate(games):
+            click.echo(f"\n[{i+1}/{len(games)}] {g.name}")
+            success, msg = service.create_and_configure(g, dry_run)
+            status = "[OK]" if success else "[FAIL]"
+            click.echo(f"  {status} {msg}")
+
+            # Rate limiting between batches
+            if (i + 1) % batch_size == 0 and i < len(games) - 1:
+                click.echo(f"\n  Waiting 30 seconds for rate limit...")
+                if not dry_run:
+                    time.sleep(30)
+
+        click.echo("\nDone!")
+
+
+@firebase.command("configure")
+@click.option("--game", "-g", required=True, help="Game ID to configure")
+@click.pass_context
+def firebase_configure(ctx, game):
+    """Run FlutterFire configure for a game"""
+    scanner: GameScanner = ctx.obj["scanner"]
+    config = ctx.obj["config"]
+    dry_run = config.is_dry_run
+
+    service = FirebaseService(config)
+
+    # Check FlutterFire CLI
+    available, msg = service.check_flutterfire_available()
+    if not available:
+        click.echo(f"[ERROR] {msg}")
+        return
+    click.echo(f"[OK] {msg}")
+
+    game_info = scanner.get_game(game)
+    if not game_info or not game_info.exists:
+        click.echo(f"Game {game} not found")
+        return
+
+    click.echo(f"\nRunning FlutterFire configure for {game_info.name}...")
+    success, msg = service.run_flutterfire_configure(game_info, dry_run)
+
+    if success:
+        click.echo(f"  [OK] {msg}")
+    else:
+        click.echo(f"  [FAIL] {msg}")
+
+
+@firebase.command("list")
+@click.pass_context
+def firebase_list(ctx):
+    """List existing Firebase projects"""
+    config = ctx.obj["config"]
+    service = FirebaseService(config)
+
+    available, msg = service.check_cli_available()
+    if not available:
+        click.echo(f"[ERROR] {msg}")
+        return
+
+    click.echo("Fetching Firebase projects...")
+    success, projects = service.list_projects()
+
+    if success:
+        mg_projects = [p for p in projects if p.startswith("mg-game-")]
+        other_projects = [p for p in projects if not p.startswith("mg-game-")]
+
+        click.echo(f"\nMG Game Projects ({len(mg_projects)}):")
+        for p in sorted(mg_projects):
+            click.echo(f"  - {p}")
+
+        if other_projects:
+            click.echo(f"\nOther Projects ({len(other_projects)}):")
+            for p in sorted(other_projects)[:5]:
+                click.echo(f"  - {p}")
+            if len(other_projects) > 5:
+                click.echo(f"  ... and {len(other_projects) - 5} more")
+    else:
+        click.echo(f"[FAIL] {projects}")
+
+
 # ============================================
 # Ads Commands
 # ============================================

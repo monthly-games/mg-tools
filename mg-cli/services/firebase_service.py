@@ -5,13 +5,18 @@ Handles Firebase configuration for MG Games projects.
 - Creates firebase_options.dart
 - Enables Firebase dependencies in pubspec.yaml
 - Generates google-services.json and GoogleService-Info.plist templates
+- Creates Firebase projects via Firebase CLI
+- Configures apps via FlutterFire CLI
 """
 
 import os
 import re
+import subprocess
+import shutil
+import time
+import json
 from pathlib import Path
-from typing import Optional, Dict, Any, Tuple
-from jinja2 import Template
+from typing import Optional, Dict, Any, Tuple, List
 
 from ..config import get_config, Config
 from .game_scanner import GameInfo
@@ -22,6 +27,255 @@ class FirebaseService:
 
     def __init__(self, config: Optional[Config] = None):
         self.config = config or get_config()
+        self._firebase_cli = self._find_firebase_cli()
+        self._flutterfire_cli = self._find_flutterfire_cli()
+
+    def _find_firebase_cli(self) -> Optional[str]:
+        """Find Firebase CLI executable"""
+        # Try common locations
+        if shutil.which("firebase"):
+            return "firebase"
+        # Windows npm global
+        npm_path = Path(os.environ.get("APPDATA", "")) / "npm" / "firebase.cmd"
+        if npm_path.exists():
+            return str(npm_path)
+        return None
+
+    def _find_flutterfire_cli(self) -> Optional[str]:
+        """Find FlutterFire CLI executable"""
+        if shutil.which("flutterfire"):
+            return "flutterfire"
+        # Dart pub global
+        dart_path = Path(os.environ.get("LOCALAPPDATA", "")) / "Pub" / "Cache" / "bin" / "flutterfire.bat"
+        if dart_path.exists():
+            return str(dart_path)
+        return None
+
+    def check_cli_available(self) -> Tuple[bool, str]:
+        """Check if Firebase CLI is available"""
+        if not self._firebase_cli:
+            return False, "Firebase CLI not found. Install with: npm install -g firebase-tools"
+        try:
+            result = subprocess.run(
+                [self._firebase_cli, "--version"],
+                capture_output=True, text=True, timeout=30
+            )
+            if result.returncode == 0:
+                return True, f"Firebase CLI {result.stdout.strip()}"
+            return False, "Firebase CLI check failed"
+        except Exception as e:
+            return False, str(e)
+
+    def check_flutterfire_available(self) -> Tuple[bool, str]:
+        """Check if FlutterFire CLI is available"""
+        if not self._flutterfire_cli:
+            return False, "FlutterFire CLI not found. Install with: dart pub global activate flutterfire_cli"
+        try:
+            result = subprocess.run(
+                [self._flutterfire_cli, "--version"],
+                capture_output=True, text=True, timeout=30
+            )
+            if result.returncode == 0:
+                return True, f"FlutterFire CLI {result.stdout.strip()}"
+            return False, "FlutterFire CLI check failed"
+        except Exception as e:
+            return False, str(e)
+
+    def list_projects(self) -> Tuple[bool, List[str]]:
+        """List existing Firebase projects"""
+        if not self._firebase_cli:
+            return False, ["Firebase CLI not available"]
+
+        try:
+            result = subprocess.run(
+                [self._firebase_cli, "projects:list", "--json"],
+                capture_output=True, text=True, timeout=60
+            )
+            if result.returncode == 0:
+                data = json.loads(result.stdout)
+                projects = [p.get("projectId", "") for p in data.get("result", [])]
+                return True, projects
+            return False, [result.stderr]
+        except json.JSONDecodeError:
+            # Parse non-JSON output
+            return True, []
+        except Exception as e:
+            return False, [str(e)]
+
+    def create_project(self, game_id: str, dry_run: bool = False) -> Tuple[bool, str]:
+        """Create a Firebase project for a game
+
+        Args:
+            game_id: Game ID (e.g., "0001")
+            dry_run: If True, don't actually create
+
+        Returns:
+            Tuple of (success, message)
+        """
+        if not self._firebase_cli:
+            return False, "Firebase CLI not available"
+
+        project_id = f"mg-game-{game_id}"
+        display_name = f"MG Game {game_id}"
+
+        if dry_run:
+            return True, f"[DRY-RUN] Would create project: {project_id}"
+
+        # Check if project already exists
+        success, projects = self.list_projects()
+        if success and project_id in projects:
+            return True, f"Project {project_id} already exists"
+
+        try:
+            result = subprocess.run(
+                [self._firebase_cli, "projects:create", project_id,
+                 "--display-name", display_name],
+                capture_output=True, text=True, timeout=120
+            )
+            if result.returncode == 0:
+                return True, f"Project {project_id} created"
+            elif "already exists" in result.stderr.lower():
+                return True, f"Project {project_id} already exists"
+            else:
+                return False, result.stderr.strip()
+        except subprocess.TimeoutExpired:
+            return False, "Timeout creating project"
+        except Exception as e:
+            return False, str(e)
+
+    def register_android_app(self, game_id: str, dry_run: bool = False) -> Tuple[bool, str]:
+        """Register Android app in Firebase project"""
+        if not self._firebase_cli:
+            return False, "Firebase CLI not available"
+
+        project_id = f"mg-game-{game_id}"
+        package_name = f"com.monthlygames.game{game_id}"
+
+        if dry_run:
+            return True, f"[DRY-RUN] Would register Android app: {package_name}"
+
+        try:
+            result = subprocess.run(
+                [self._firebase_cli, "apps:create", "ANDROID",
+                 "--package-name", package_name,
+                 "--project", project_id],
+                capture_output=True, text=True, timeout=120
+            )
+            if result.returncode == 0:
+                return True, f"Android app registered: {package_name}"
+            elif "already exists" in result.stderr.lower():
+                return True, f"Android app already exists"
+            else:
+                return False, result.stderr.strip()
+        except Exception as e:
+            return False, str(e)
+
+    def register_ios_app(self, game_id: str, dry_run: bool = False) -> Tuple[bool, str]:
+        """Register iOS app in Firebase project"""
+        if not self._firebase_cli:
+            return False, "Firebase CLI not available"
+
+        project_id = f"mg-game-{game_id}"
+        bundle_id = f"com.monthlygames.game{game_id}"
+
+        if dry_run:
+            return True, f"[DRY-RUN] Would register iOS app: {bundle_id}"
+
+        try:
+            result = subprocess.run(
+                [self._firebase_cli, "apps:create", "IOS",
+                 "--bundle-id", bundle_id,
+                 "--project", project_id],
+                capture_output=True, text=True, timeout=120
+            )
+            if result.returncode == 0:
+                return True, f"iOS app registered: {bundle_id}"
+            elif "already exists" in result.stderr.lower():
+                return True, f"iOS app already exists"
+            else:
+                return False, result.stderr.strip()
+        except Exception as e:
+            return False, str(e)
+
+    def run_flutterfire_configure(
+        self, game_info: GameInfo, dry_run: bool = False
+    ) -> Tuple[bool, str]:
+        """Run flutterfire configure for a game
+
+        This downloads actual API keys and generates firebase_options.dart
+        """
+        if not self._flutterfire_cli:
+            return False, "FlutterFire CLI not available"
+
+        game_dir = game_info.path / "game"
+        if not game_dir.exists():
+            return False, "Game directory not found"
+
+        project_id = f"mg-game-{game_info.game_id}"
+
+        if dry_run:
+            return True, f"[DRY-RUN] Would run flutterfire configure for {project_id}"
+
+        try:
+            result = subprocess.run(
+                [self._flutterfire_cli, "configure",
+                 "--project", project_id,
+                 "--platforms", "android,ios",
+                 "--yes"],  # Auto-accept prompts
+                cwd=str(game_dir),
+                capture_output=True, text=True, timeout=180
+            )
+            if result.returncode == 0:
+                return True, "FlutterFire configured successfully"
+            else:
+                return False, result.stderr.strip() or result.stdout.strip()
+        except subprocess.TimeoutExpired:
+            return False, "Timeout running flutterfire configure"
+        except Exception as e:
+            return False, str(e)
+
+    def create_and_configure(
+        self, game_info: GameInfo, dry_run: bool = False
+    ) -> Tuple[bool, str]:
+        """Create Firebase project and configure app (full setup)
+
+        Args:
+            game_info: Game information
+            dry_run: If True, don't actually make changes
+
+        Returns:
+            Tuple of (success, message)
+        """
+        results = []
+        game_id = game_info.game_id
+
+        # 1. Create Firebase project
+        success, msg = self.create_project(game_id, dry_run)
+        results.append(f"Project: {msg}")
+        if not success and "already exists" not in msg.lower():
+            return False, "; ".join(results)
+
+        # Wait a bit for project to be ready
+        if not dry_run:
+            time.sleep(2)
+
+        # 2. Register Android app
+        success, msg = self.register_android_app(game_id, dry_run)
+        results.append(f"Android: {msg}")
+
+        # 3. Register iOS app
+        success, msg = self.register_ios_app(game_id, dry_run)
+        results.append(f"iOS: {msg}")
+
+        # Wait for apps to be ready
+        if not dry_run:
+            time.sleep(2)
+
+        # 4. Run flutterfire configure
+        success, msg = self.run_flutterfire_configure(game_info, dry_run)
+        results.append(f"FlutterFire: {msg}")
+
+        return True, "; ".join(results)
 
     def init_firebase(self, game_info: GameInfo, force: bool = False) -> Tuple[bool, str]:
         """Initialize Firebase for a game
