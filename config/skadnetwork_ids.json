@@ -1,0 +1,154 @@
+{
+  "description": "SKAdNetwork IDs for iOS 14+ ad attribution",
+  "last_updated": "2024-12",
+  "source": "https://developers.google.com/admob/ios/quick-start#skadnetwork",
+  "skadnetwork_ids": [
+    {
+      "network": "Google",
+      "ids": [
+        "cstr6suwn9.skadnetwork",
+        "4fzdc2evr5.skadnetwork",
+        "4pfyvq9l8r.skadnetwork",
+        "2fnua5tdw4.skadnetwork",
+        "ydx93a7ass.skadnetwork",
+        "5a6flpkh64.skadnetwork",
+        "p78axxw29g.skadnetwork",
+        "v72qych5uu.skadnetwork",
+        "ludvb6z3bs.skadnetwork",
+        "cp8zw746q7.skadnetwork",
+        "c6k4g5qg8m.skadnetwork",
+        "s39g8k73mm.skadnetwork",
+        "3qy4746246.skadnetwork",
+        "3sh42y64q3.skadnetwork",
+        "f38h382jlk.skadnetwork",
+        "hs6bdukanm.skadnetwork",
+        "prcb7njmu6.skadnetwork",
+        "v4nxqhlyqp.skadnetwork",
+        "wzmmz9fp6w.skadnetwork",
+        "yclnxrl5pm.skadnetwork",
+        "t38b2kh725.skadnetwork",
+        "7ug5zh24hu.skadnetwork",
+        "9rd848q2bz.skadnetwork",
+        "y5ghdn5j9k.skadnetwork",
+        "n6fk4nfna4.skadnetwork",
+        "kbd757ywx3.skadnetwork",
+        "9t245vhmpl.skadnetwork",
+        "44jx6755aq.skadnetwork",
+        "tl55sbb4fm.skadnetwork",
+        "2u9pt9hc89.skadnetwork",
+        "8s468mfl3y.skadnetwork",
+        "av6w8kgt66.skadnetwork",
+        "klf5c3l5u5.skadnetwork",
+        "ppxm28t8ap.skadnetwork",
+        "424m5254lk.skadnetwork",
+        "uw77j35x4d.skadnetwork",
+        "e5fvkxwrpn.skadnetwork",
+        "zq492l623r.skadnetwork",
+        "3rd42ekr43.skadnetwork",
+        "3qcr597p9d.skadnetwork"
+      ]
+    },
+    {
+      "network": "Meta (Facebook)",
+      "ids": [
+        "v9wttpbfk9.skadnetwork",
+        "n38lu8286q.skadnetwork"
+      ]
+    },
+    {
+      "network": "Unity Ads",
+      "ids": [
+        "4dzt52r2t5.skadnetwork",
+        "bvpn9ufa9b.skadnetwork"
+      ]
+    },
+    {
+      "network": "AppLovin",
+      "ids": [
+        "ludvb6z3bs.skadnetwork"
+      ]
+    },
+    {
+      "network": "ironSource",
+      "ids": [
+        "su67r6k2v3.skadnetwork"
+      ]
+    },
+    {
+      "network": "Vungle",
+      "ids": [
+        "gta9lk7p23.skadnetwork"
+      ]
+    },
+    {
+      "network": "AdColony",
+      "ids": [
+        "4pfyvq9l8r.skadnetwork",
+        "yclnxrl5pm.skadnetwork"
+      ]
+    },
+    {
+      "network": "Chartboost",
+      "ids": [
+        "f38h382jlk.skadnetwork"
+      ]
+    },
+    {
+      "network": "InMobi",
+      "ids": [
+        "wzmmz9fp6w.skadnetwork"
+      ]
+    },
+    {
+      "network": "Mintegral",
+      "ids": [
+        "kbd757ywx3.skadnetwork"
+      ]
+    },
+    {
+      "network": "TikTok",
+      "ids": [
+        "22mmun2rn5.skadnetwork",
+        "238da6jt44.skadnetwork",
+        "3l6bd9hu43.skadnetwork"
+      ]
+    },
+    {
+      "network": "Snap",
+      "ids": [
+        "424m5254lk.skadnetwork"
+      ]
+    },
+    {
+      "network": "Twitter",
+      "ids": [
+        "9yg77x724h.skadnetwork"
+      ]
+    },
+    {
+      "network": "Liftoff",
+      "ids": [
+        "7ug5zh24hu.skadnetwork"
+      ]
+    },
+    {
+      "network": "Moloco",
+      "ids": [
+        "9t245vhmpl.skadnetwork"
+      ]
+    },
+    {
+      "network": "Digital Turbine",
+      "ids": [
+        "m8dbw4sv7c.skadnetwork"
+      ]
+    },
+    {
+      "network": "Pangle",
+      "ids": [
+        "a2p9lx4jpn.skadnetwork"
+      ]
+    }
+  ],
+  "info_plist_snippet": "<key>SKAdNetworkItems</key>\n<array>\n  <!-- Add each ID as: -->\n  <!-- <dict><key>SKAdNetworkIdentifier</key><string>ID_HERE.skadnetwork</string></dict> -->\n</array>"
+}

@@ -1,0 +1,139 @@
+# Ad Units Configuration
+# MG Games - 광고 유닛 관리
+
+# AdMob Publisher ID
+publisher:
+  id: "ca-app-pub-XXXXXXXXXX"  # 실제 Publisher ID로 교체
+  name: "Monthly Games"
+
+# 테스트 광고 유닛 (Google 공식 테스트 ID)
+test_ads:
+  android:
+    app_id: ca-app-pub-3940256099942544~3347511713
+    banner: ca-app-pub-3940256099942544/6300978111
+    interstitial: ca-app-pub-3940256099942544/1033173712
+    rewarded: ca-app-pub-3940256099942544/5224354917
+    rewarded_interstitial: ca-app-pub-3940256099942544/5354046379
+    native: ca-app-pub-3940256099942544/2247696110
+    app_open: ca-app-pub-3940256099942544/9257395921
+
+  ios:
+    app_id: ca-app-pub-3940256099942544~1458002511
+    banner: ca-app-pub-3940256099942544/2934735716
+    interstitial: ca-app-pub-3940256099942544/4411468910
+    rewarded: ca-app-pub-3940256099942544/1712485313
+    rewarded_interstitial: ca-app-pub-3940256099942544/6978759866
+    native: ca-app-pub-3940256099942544/3986624511
+    app_open: ca-app-pub-3940256099942544/5575463023
+
+# 프로덕션 광고 유닛 패턴
+# Unit ID 명명 규칙: {game_id}{type_code}
+# type_code: 1=banner, 2=interstitial, 3=rewarded, 4=rewarded_interstitial, 5=native, 6=app_open
+production_pattern:
+  android:
+    banner: "ca-app-pub-{publisher_id}/{game_id}1"
+    interstitial: "ca-app-pub-{publisher_id}/{game_id}2"
+    rewarded: "ca-app-pub-{publisher_id}/{game_id}3"
+    rewarded_interstitial: "ca-app-pub-{publisher_id}/{game_id}4"
+    native: "ca-app-pub-{publisher_id}/{game_id}5"
+    app_open: "ca-app-pub-{publisher_id}/{game_id}6"
+
+  ios:
+    banner: "ca-app-pub-{publisher_id}/{game_id}11"
+    interstitial: "ca-app-pub-{publisher_id}/{game_id}12"
+    rewarded: "ca-app-pub-{publisher_id}/{game_id}13"
+    rewarded_interstitial: "ca-app-pub-{publisher_id}/{game_id}14"
+    native: "ca-app-pub-{publisher_id}/{game_id}15"
+    app_open: "ca-app-pub-{publisher_id}/{game_id}16"
+
+# 광고 정책 설정
+policies:
+  banner:
+    placement: bottom  # top, bottom
+    refresh_interval: 60  # 초 (최소 30초)
+    always_visible: false  # 게임플레이 중 숨김 가능
+
+  interstitial:
+    min_interval_seconds: 180  # 3분 간격
+    daily_cap: 10
+    placements:
+      - level_complete
+      - return_from_background
+      - menu_transition
+
+  rewarded:
+    cooldown_seconds: 30
+    daily_cap: null  # 무제한
+    placements:
+      - extra_life
+      - double_rewards
+      - skip_wait_time
+      - unlock_chest
+      - bonus_currency
+
+  rewarded_interstitial:
+    min_interval_seconds: 300  # 5분 간격
+    daily_cap: 5
+    placements:
+      - natural_break
+      - session_milestone
+
+  app_open:
+    min_cold_start_interval: 4  # 시간
+    enabled: true
+
+# Mediation 설정
+mediation:
+  enabled: true
+  waterfall:
+    - network: admob
+      priority: 1
+      ecpm_floor: null
+
+    - network: meta_audience_network
+      priority: 2
+      app_id: "{meta_app_id}"
+      ecpm_floor: 5.0
+
+    - network: unity_ads
+      priority: 3
+      game_id: "{unity_game_id}"
+      ecpm_floor: 3.0
+
+    - network: applovin
+      priority: 4
+      sdk_key: "{applovin_sdk_key}"
+      ecpm_floor: 2.0
+
+    - network: ironsource
+      priority: 5
+      app_key: "{ironsource_app_key}"
+      ecpm_floor: 1.0
+
+    - network: vungle
+      priority: 6
+      app_id: "{vungle_app_id}"
+      ecpm_floor: 0.5
+
+# eCPM 기대치 (USD)
+ecpm_benchmarks:
+  tier1_countries:  # US, GB, CA, AU, DE, FR
+    banner: 2.0
+    interstitial: 15.0
+    rewarded: 25.0
+
+  tier2_countries:  # JP, KR, IT, ES, NL
+    banner: 1.5
+    interstitial: 10.0
+    rewarded: 18.0
+
+  tier3_countries:  # BR, MX, IN, ID, TH
+    banner: 0.5
+    interstitial: 3.0
+    rewarded: 8.0
+
+# 수익 추적
+revenue_tracking:
+  firebase_analytics: true
+  server_to_server: false  # 필요시 활성화
+  currency: USD

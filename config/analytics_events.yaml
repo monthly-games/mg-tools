@@ -1,0 +1,819 @@
+# MG Games Analytics Events Schema
+# 42개 게임 공통 이벤트 및 사용자 속성 정의
+# Firebase Analytics 기반
+
+version: "1.0"
+last_updated: "2024-12"
+
+# ============================================
+# 사용자 속성 (User Properties)
+# ============================================
+user_properties:
+  # 기본 속성
+  first_open_date:
+    description: "앱 최초 설치일"
+    type: string
+    format: "YYYY-MM-DD"
+    example: "2024-12-24"
+
+  player_level:
+    description: "플레이어 현재 레벨"
+    type: integer
+    range: [1, 999]
+
+  total_playtime_minutes:
+    description: "총 플레이 시간 (분)"
+    type: integer
+
+  total_spend_usd:
+    description: "총 결제 금액 (USD)"
+    type: float
+    format: "0.00"
+
+  vip_tier:
+    description: "VIP 등급"
+    type: string
+    values: ["none", "bronze", "silver", "gold", "platinum", "diamond"]
+
+  # 어트리뷰션 속성
+  attribution_source:
+    description: "유입 소스"
+    type: string
+    values: ["organic", "google_ads", "meta_ads", "unity_ads", "applovin", "ironsource", "cross_promo", "referral"]
+
+  attribution_campaign:
+    description: "캠페인명"
+    type: string
+
+  attribution_medium:
+    description: "매체"
+    type: string
+    values: ["cpi", "cpa", "cpm", "organic"]
+
+  # 게임 특성 속성
+  preferred_game_mode:
+    description: "선호 게임 모드"
+    type: string
+
+  last_active_date:
+    description: "마지막 활동일"
+    type: string
+    format: "YYYY-MM-DD"
+
+  days_since_install:
+    description: "설치 후 경과 일수"
+    type: integer
+
+  paying_user:
+    description: "결제 유저 여부"
+    type: boolean
+
+# ============================================
+# 표준 이벤트 (Standard Events)
+# ============================================
+events:
+  # ------------------------------------------
+  # 세션 이벤트
+  # ------------------------------------------
+  session_start:
+    description: "세션 시작"
+    category: session
+    parameters:
+      session_id:
+        type: string
+        required: true
+        description: "고유 세션 ID"
+      session_number:
+        type: integer
+        required: false
+        description: "누적 세션 수"
+
+  session_end:
+    description: "세션 종료"
+    category: session
+    parameters:
+      session_id:
+        type: string
+        required: true
+      duration_seconds:
+        type: integer
+        required: true
+        description: "세션 지속 시간 (초)"
+      screens_viewed:
+        type: integer
+        required: false
+        description: "조회한 화면 수"
+
+  # ------------------------------------------
+  # 튜토리얼 이벤트
+  # ------------------------------------------
+  tutorial_begin:
+    description: "튜토리얼 시작"
+    category: onboarding
+    firebase_event: tutorial_begin
+    parameters: {}
+
+  tutorial_step:
+    description: "튜토리얼 단계 완료"
+    category: onboarding
+    parameters:
+      step_number:
+        type: integer
+        required: true
+        description: "튜토리얼 단계 번호"
+      step_name:
+        type: string
+        required: false
+        description: "단계 이름"
+
+  tutorial_complete:
+    description: "튜토리얼 완료"
+    category: onboarding
+    firebase_event: tutorial_complete
+    parameters:
+      duration_seconds:
+        type: integer
+        required: true
+        description: "튜토리얼 완료 소요 시간"
+      skipped:
+        type: boolean
+        required: false
+        description: "건너뛰기 여부"
+
+  tutorial_skip:
+    description: "튜토리얼 건너뛰기"
+    category: onboarding
+    parameters:
+      step_number:
+        type: integer
+        required: true
+        description: "건너뛴 시점의 단계"
+
+  # ------------------------------------------
+  # 레벨/스테이지 이벤트
+  # ------------------------------------------
+  level_start:
+    description: "레벨/스테이지 시작"
+    category: progression
+    firebase_event: level_start
+    parameters:
+      level_id:
+        type: string
+        required: true
+        description: "레벨 ID"
+      level_name:
+        type: string
+        required: false
+        description: "레벨 이름"
+      level_number:
+        type: integer
+        required: false
+        description: "레벨 번호"
+      difficulty:
+        type: string
+        required: false
+        values: ["easy", "normal", "hard", "nightmare"]
+
+  level_end:
+    description: "레벨/스테이지 종료"
+    category: progression
+    firebase_event: level_end
+    parameters:
+      level_id:
+        type: string
+        required: true
+      level_name:
+        type: string
+        required: false
+      success:
+        type: boolean
+        required: true
+        description: "클리어 성공 여부"
+      score:
+        type: integer
+        required: false
+        description: "획득 점수"
+      stars:
+        type: integer
+        required: false
+        range: [0, 3]
+        description: "획득 별 수"
+      duration_seconds:
+        type: integer
+        required: true
+        description: "소요 시간"
+      retry_count:
+        type: integer
+        required: false
+        description: "재시도 횟수"
+
+  level_up:
+    description: "플레이어 레벨업"
+    category: progression
+    firebase_event: level_up
+    parameters:
+      level:
+        type: integer
+        required: true
+        description: "새 레벨"
+      previous_level:
+        type: integer
+        required: false
+        description: "이전 레벨"
+
+  # ------------------------------------------
+  # 재화 이벤트
+  # ------------------------------------------
+  currency_earn:
+    description: "재화 획득"
+    category: economy
+    firebase_event: earn_virtual_currency
+    parameters:
+      currency_type:
+        type: string
+        required: true
+        values: ["gold", "gem", "energy", "ticket", "coin"]
+        description: "재화 종류"
+      amount:
+        type: integer
+        required: true
+        description: "획득량"
+      source:
+        type: string
+        required: true
+        description: "획득 경로"
+        values: ["level_clear", "daily_reward", "ad_reward", "quest", "achievement", "purchase", "gift", "event"]
+      balance:
+        type: integer
+        required: false
+        description: "획득 후 잔액"
+
+  currency_spend:
+    description: "재화 소비"
+    category: economy
+    firebase_event: spend_virtual_currency
+    parameters:
+      currency_type:
+        type: string
+        required: true
+        values: ["gold", "gem", "energy", "ticket", "coin"]
+      amount:
+        type: integer
+        required: true
+        description: "소비량"
+      item_type:
+        type: string
+        required: true
+        description: "구매 아이템 종류"
+      item_id:
+        type: string
+        required: false
+        description: "아이템 ID"
+      balance:
+        type: integer
+        required: false
+        description: "소비 후 잔액"
+
+  # ------------------------------------------
+  # 수익화 이벤트 - 광고
+  # ------------------------------------------
+  ad_impression:
+    description: "광고 노출"
+    category: monetization
+    firebase_event: ad_impression
+    parameters:
+      ad_type:
+        type: string
+        required: true
+        values: ["banner", "interstitial", "rewarded", "rewarded_interstitial", "native", "app_open"]
+        description: "광고 유형"
+      ad_unit_id:
+        type: string
+        required: true
+        description: "광고 유닛 ID"
+      ad_network:
+        type: string
+        required: false
+        values: ["admob", "meta", "unity", "applovin", "ironsource", "vungle"]
+        description: "광고 네트워크"
+      placement:
+        type: string
+        required: true
+        description: "노출 위치"
+        example_values: ["level_complete", "main_menu", "shop", "daily_reward"]
+      revenue:
+        type: float
+        required: false
+        description: "추정 수익 (USD)"
+      currency:
+        type: string
+        required: false
+        default: "USD"
+
+  ad_click:
+    description: "광고 클릭"
+    category: monetization
+    parameters:
+      ad_type:
+        type: string
+        required: true
+      ad_unit_id:
+        type: string
+        required: true
+      placement:
+        type: string
+        required: true
+
+  ad_reward_earned:
+    description: "보상형 광고 보상 획득"
+    category: monetization
+    parameters:
+      ad_unit_id:
+        type: string
+        required: true
+      placement:
+        type: string
+        required: true
+      reward_type:
+        type: string
+        required: true
+        description: "보상 종류"
+        values: ["currency", "item", "continue", "bonus", "unlock"]
+      reward_amount:
+        type: integer
+        required: false
+        description: "보상량"
+
+  ad_failed:
+    description: "광고 로드/표시 실패"
+    category: monetization
+    parameters:
+      ad_type:
+        type: string
+        required: true
+      ad_unit_id:
+        type: string
+        required: true
+      error_code:
+        type: string
+        required: true
+        description: "에러 코드"
+      error_message:
+        type: string
+        required: false
+
+  # ------------------------------------------
+  # 수익화 이벤트 - IAP
+  # ------------------------------------------
+  purchase:
+    description: "인앱 구매 완료"
+    category: monetization
+    firebase_event: purchase
+    parameters:
+      transaction_id:
+        type: string
+        required: true
+        description: "거래 ID"
+      product_id:
+        type: string
+        required: true
+        description: "상품 ID"
+      product_name:
+        type: string
+        required: false
+        description: "상품명"
+      price:
+        type: float
+        required: true
+        description: "가격"
+      currency:
+        type: string
+        required: true
+        description: "통화 코드 (ISO 4217)"
+        example: "USD"
+      quantity:
+        type: integer
+        required: false
+        default: 1
+      product_type:
+        type: string
+        required: false
+        values: ["consumable", "non_consumable", "subscription"]
+
+  purchase_started:
+    description: "구매 프로세스 시작"
+    category: monetization
+    parameters:
+      product_id:
+        type: string
+        required: true
+      price:
+        type: float
+        required: true
+      currency:
+        type: string
+        required: true
+      source:
+        type: string
+        required: false
+        description: "구매 진입점"
+        values: ["shop", "popup", "banner", "out_of_currency"]
+
+  purchase_failed:
+    description: "구매 실패"
+    category: monetization
+    parameters:
+      product_id:
+        type: string
+        required: true
+      error_code:
+        type: string
+        required: true
+      error_message:
+        type: string
+        required: false
+
+  subscription_start:
+    description: "구독 시작"
+    category: monetization
+    parameters:
+      product_id:
+        type: string
+        required: true
+      subscription_type:
+        type: string
+        required: true
+        values: ["weekly", "monthly", "yearly"]
+      trial:
+        type: boolean
+        required: false
+        description: "무료 체험 여부"
+
+  subscription_renew:
+    description: "구독 갱신"
+    category: monetization
+    parameters:
+      product_id:
+        type: string
+        required: true
+      renewal_count:
+        type: integer
+        required: true
+        description: "갱신 횟수"
+
+  subscription_cancel:
+    description: "구독 취소"
+    category: monetization
+    parameters:
+      product_id:
+        type: string
+        required: true
+      reason:
+        type: string
+        required: false
+        description: "취소 사유"
+
+  # ------------------------------------------
+  # 소셜 이벤트
+  # ------------------------------------------
+  share:
+    description: "콘텐츠 공유"
+    category: social
+    firebase_event: share
+    parameters:
+      content_type:
+        type: string
+        required: true
+        values: ["score", "achievement", "screenshot", "invite"]
+      method:
+        type: string
+        required: true
+        values: ["facebook", "twitter", "instagram", "kakao", "line", "native"]
+
+  invite_sent:
+    description: "친구 초대 발송"
+    category: social
+    parameters:
+      method:
+        type: string
+        required: true
+      invite_code:
+        type: string
+        required: false
+
+  friend_joined:
+    description: "초대 친구 가입"
+    category: social
+    parameters:
+      referrer_id:
+        type: string
+        required: true
+        description: "초대자 ID"
+
+  # ------------------------------------------
+  # 게임 특화 이벤트
+  # ------------------------------------------
+  gacha_pull:
+    description: "가챠 뽑기"
+    category: game_specific
+    parameters:
+      gacha_type:
+        type: string
+        required: true
+        description: "가챠 종류"
+      pull_count:
+        type: integer
+        required: true
+        values: [1, 10, 11]
+        description: "뽑기 횟수"
+      currency_type:
+        type: string
+        required: true
+        description: "사용 재화"
+      currency_amount:
+        type: integer
+        required: true
+        description: "사용량"
+      result_rarity:
+        type: string
+        required: false
+        values: ["common", "rare", "epic", "legendary", "mythic"]
+        description: "최고 등급 결과"
+
+  character_unlock:
+    description: "캐릭터 획득"
+    category: game_specific
+    parameters:
+      character_id:
+        type: string
+        required: true
+      character_name:
+        type: string
+        required: false
+      rarity:
+        type: string
+        required: false
+        values: ["common", "rare", "epic", "legendary", "mythic"]
+      source:
+        type: string
+        required: true
+        values: ["gacha", "purchase", "event", "quest", "fusion"]
+
+  character_upgrade:
+    description: "캐릭터 강화"
+    category: game_specific
+    parameters:
+      character_id:
+        type: string
+        required: true
+      upgrade_type:
+        type: string
+        required: true
+        values: ["level", "star", "skill", "equipment", "awakening"]
+      from_value:
+        type: integer
+        required: true
+      to_value:
+        type: integer
+        required: true
+
+  battle_start:
+    description: "전투 시작"
+    category: game_specific
+    parameters:
+      battle_type:
+        type: string
+        required: true
+        values: ["story", "pvp", "raid", "guild_war", "event", "tower"]
+      stage_id:
+        type: string
+        required: false
+      team_power:
+        type: integer
+        required: false
+        description: "팀 전투력"
+
+  battle_end:
+    description: "전투 종료"
+    category: game_specific
+    parameters:
+      battle_type:
+        type: string
+        required: true
+      stage_id:
+        type: string
+        required: false
+      result:
+        type: string
+        required: true
+        values: ["win", "lose", "draw", "timeout", "quit"]
+      duration_seconds:
+        type: integer
+        required: true
+      damage_dealt:
+        type: integer
+        required: false
+      damage_taken:
+        type: integer
+        required: false
+
+  quest_complete:
+    description: "퀘스트 완료"
+    category: game_specific
+    parameters:
+      quest_id:
+        type: string
+        required: true
+      quest_type:
+        type: string
+        required: true
+        values: ["daily", "weekly", "main", "side", "event", "achievement"]
+      rewards:
+        type: string
+        required: false
+        description: "보상 목록 (JSON string)"
+
+  # ------------------------------------------
+  # 인게이지먼트 이벤트
+  # ------------------------------------------
+  daily_login:
+    description: "일일 로그인"
+    category: engagement
+    parameters:
+      consecutive_days:
+        type: integer
+        required: true
+        description: "연속 출석 일수"
+      total_days:
+        type: integer
+        required: false
+        description: "총 출석 일수"
+      rewards_claimed:
+        type: boolean
+        required: false
+
+  notification_received:
+    description: "푸시 알림 수신"
+    category: engagement
+    parameters:
+      notification_type:
+        type: string
+        required: true
+        values: ["energy_full", "daily_reset", "event", "promotion", "retention"]
+      campaign_id:
+        type: string
+        required: false
+
+  notification_clicked:
+    description: "푸시 알림 클릭"
+    category: engagement
+    parameters:
+      notification_type:
+        type: string
+        required: true
+      campaign_id:
+        type: string
+        required: false
+      time_to_click_seconds:
+        type: integer
+        required: false
+        description: "수신 후 클릭까지 시간"
+
+  screen_view:
+    description: "화면 조회"
+    category: engagement
+    firebase_event: screen_view
+    parameters:
+      screen_name:
+        type: string
+        required: true
+        description: "화면 이름"
+      screen_class:
+        type: string
+        required: false
+        description: "화면 클래스명"
+      previous_screen:
+        type: string
+        required: false
+        description: "이전 화면"
+
+  # ------------------------------------------
+  # 에러/성능 이벤트
+  # ------------------------------------------
+  app_exception:
+    description: "앱 예외 발생"
+    category: technical
+    parameters:
+      exception_type:
+        type: string
+        required: true
+        description: "예외 타입"
+      message:
+        type: string
+        required: false
+        description: "에러 메시지"
+      stack_trace:
+        type: string
+        required: false
+        description: "스택 트레이스 (요약)"
+      fatal:
+        type: boolean
+        required: true
+        description: "치명적 에러 여부"
+
+  performance_trace:
+    description: "성능 측정"
+    category: technical
+    parameters:
+      trace_name:
+        type: string
+        required: true
+        description: "트레이스 이름"
+      duration_ms:
+        type: integer
+        required: true
+        description: "소요 시간 (ms)"
+      success:
+        type: boolean
+        required: true
+
+# ============================================
+# 이벤트 카테고리 정의
+# ============================================
+categories:
+  session:
+    description: "세션 관련 이벤트"
+    priority: P0
+  onboarding:
+    description: "온보딩/튜토리얼 이벤트"
+    priority: P0
+  progression:
+    description: "게임 진행 이벤트"
+    priority: P0
+  economy:
+    description: "게임 경제 이벤트"
+    priority: P0
+  monetization:
+    description: "수익화 이벤트"
+    priority: P0
+  social:
+    description: "소셜 기능 이벤트"
+    priority: P1
+  game_specific:
+    description: "게임 특화 이벤트"
+    priority: P1
+  engagement:
+    description: "인게이지먼트 이벤트"
+    priority: P1
+  technical:
+    description: "기술/에러 이벤트"
+    priority: P2
+
+# ============================================
+# 구현 가이드
+# ============================================
+implementation:
+  dart_example: |
+    // mg-common-game의 AnalyticsManager 사용
+    import 'package:mg_common_game/core/analytics/analytics_manager.dart';
+
+    // 레벨 시작
+    AnalyticsManager.instance.logEvent('level_start', {
+      'level_id': 'stage_1_5',
+      'level_name': 'Dark Forest',
+      'level_number': 5,
+      'difficulty': 'normal',
+    });
+
+    // 광고 노출
+    AnalyticsManager.instance.logEvent('ad_impression', {
+      'ad_type': 'rewarded',
+      'ad_unit_id': 'ca-app-pub-xxx/yyy',
+      'placement': 'level_complete',
+      'revenue': 0.015,
+    });
+
+    // 구매
+    AnalyticsManager.instance.logEvent('purchase', {
+      'transaction_id': 'GPA.1234-5678',
+      'product_id': 'gem_pack_100',
+      'price': 4.99,
+      'currency': 'USD',
+    });
+
+    // 사용자 속성 설정
+    AnalyticsManager.instance.setUserProperty('vip_tier', 'gold');
+    AnalyticsManager.instance.setUserProperty('player_level', '50');
+
+  naming_conventions:
+    - "이벤트명: snake_case (예: level_start, ad_impression)"
+    - "파라미터명: snake_case (예: duration_seconds, ad_type)"
+    - "값: lowercase (예: rewarded, daily_reward)"
+    - "ID값: 원본 유지 (예: stage_1_5, GPA.1234)"
+
+  best_practices:
+    - "필수 파라미터는 항상 포함"
+    - "파라미터 값은 가능한 열거형 사용"
+    - "금액은 항상 USD로 정규화"
+    - "시간은 초 단위 정수 사용"
+    - "이벤트는 액션 완료 시점에 발송"
