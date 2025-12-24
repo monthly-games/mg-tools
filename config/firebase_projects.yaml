@@ -1,72 +1,34 @@
 # Firebase Projects Configuration
-# MG Games - Firebase 프로젝트 관리
+# ================================
+# Maps game IDs to Firebase project IDs
 
-# 단일 프로젝트 전략 (dev only - 초기 단계)
-# prod 프로젝트는 할당량 확보 후 추가 예정
-environments:
-  default:
-    project_id: mg-games-dev
-    display_name: "MG Games Development"
-    shared: true
-    description: "전체 게임 공유 프로젝트 (42개 게임)"
-    region: asia-northeast3
-    billing: spark  # 추후 blaze 전환
-    console_url: https://console.firebase.google.com/project/mg-games-dev
-    features:
-      - Firebase Analytics
-      - Crashlytics
-      - Remote Config
-      - Cloud Messaging
-      - 테스트 광고 (개발 중)
+# Default pattern: mg-game-{game_id:04d}
+# Override specific games below if needed
 
-# 향후 확장 계획
-# production:
-#   project_id: mg-games-prod
-#   billing: blaze
-#   features: [실제 광고, 실제 결제, BigQuery Export]
+projects:
+  # Example overrides:
+  # "0001": "custom-project-id"
 
-# 프로덕션 게임 프로젝트 목록
-production_projects:
-  # JRPG Level A 게임
-  mg-game-0001:
-    display_name: "MG Game 0001 - Simple Tower Defense"
-    package_name: com.monthlygames.game0001
-    status: active
+  # Shared projects (cost optimization)
+  dev:
+    project_id: "mg-games-dev"
+    games: []  # Games using shared dev project
 
-  mg-game-0002:
-    display_name: "MG Game 0002 - Cat Alchemy Workshop"
-    package_name: com.monthlygames.game0002
-    status: active
+  staging:
+    project_id: "mg-games-stg"
+    games: []  # Games using shared staging project
 
-  # ... 42개 게임 프로젝트 자동 생성됨
-  # mg-cli firebase create --all 명령으로 일괄 생성
+# Project creation settings
+creation:
+  # GCP billing account (required for Blaze plan)
+  # billing_account: ""
 
-# Firebase 서비스 활성화 목록
-services:
-  required:
+  # Default region for Firestore, Storage
+  region: "asia-northeast3"  # Seoul
+
+  # Enable services on creation
+  auto_enable_services:
     - analytics
     - crashlytics
-    - remote_config
-
-  recommended:
-    - cloud_messaging
-    - app_check
     - performance
-
-  optional:
-    - firestore
-    - realtime_database
-    - cloud_functions
-
-# BigQuery Export 설정
-bigquery_export:
-  enabled: true
-  dataset_location: asia-northeast3
-  export_frequency: streaming  # 실시간 내보내기
-
-# 프로젝트 생성 제한
-limits:
-  max_projects_per_account: 99  # GCP 기본 한도
-  rate_limit_per_minute: 60
-  batch_size: 5
-  batch_delay_seconds: 30
+    - remote_config
