@@ -1,0 +1,36 @@
+# Spine AI Pipeline Dependencies
+# Python 3.11+
+
+# Core ML/Vision
+ultralytics>=8.0.0          # YOLO pose detection and object detection
+torch>=2.0.0                # PyTorch deep learning framework
+torchvision>=0.15.0         # Computer vision utilities
+transformers>=4.30.0        # Hugging Face transformers (for diffusers)
+diffusers>=0.21.0           # Stable Diffusion and other diffusion models
+segment-anything-2>=1.0.0   # SAM2 segmentation (or sam2 if available)
+
+# Image Processing
+Pillow>=10.0.0              # PIL image processing
+opencv-python>=4.8.0        # OpenCV computer vision library
+scipy>=1.11.0               # Scientific computing (Delaunay triangulation)
+matplotlib>=3.7.0           # Plotting and visualization
+
+# Inpainting & Matting
+onnxruntime>=1.16.0         # ONNX runtime for LaMa inpainting
+requests>=2.31.0            # HTTP library for model downloads
+
+# CLI & UI
+rich>=13.5.0                # Rich terminal output and progress bars
+click>=8.1.0                # CLI framework (if used)
+gradio>=3.50.0              # Web UI for interactive testing
+
+# Google Cloud (for Gemini API)
+google-cloud-vision>=3.4.0  # Google Cloud Vision API
+google-generativeai>=0.3.0  # Google Generative AI (Gemini)
+
+# Testing
+pytest>=7.4.0               # Testing framework
+pytest-cov>=4.1.0           # Coverage plugin for pytest
+
+# Utilities
+pyyaml>=6.0                 # YAML parsing
