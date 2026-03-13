@@ -6,6 +6,7 @@
 - `alpha_noise_threshold`: `0.05 -> 0.18`
 - `bone_length_variance_threshold`: `0.30 -> 0.40`
 - `symmetry_error_threshold`: `0.10 -> 0.20`
+- `alpha_noise_fail_multiplier`: `2.0` (hard-fail guardrail 유지)
 
 ### Before tuning (baseline)
 - PASS: `0/16 (0.0%)`
@@ -16,6 +17,11 @@
 - PASS: `14/16 (87.5%)`
 - WARN: `1/16 (6.25%)`
 - FAIL: `1/16 (6.25%)`
+
+### WARN/FAIL root-cause analysis
+- WARN 1건 (`113320720`): Matting noise `26.3`으로 warning 구간에 잔존
+- FAIL 1건 (`113359016`): Matting noise `37.6`으로 hard-fail 구간 유지
+- 결론: 경계선 샘플의 false WARN은 줄였고, 고노이즈 outlier 차단은 유지됨
 
 | Character | Matting Noise (Islands) | Rigging Issues | Before | After |
 | :--- | :--- | :--- | :--- | :--- |

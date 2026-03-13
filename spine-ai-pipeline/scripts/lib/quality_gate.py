@@ -21,8 +21,9 @@ class QualityGateResult:
 @dataclass
 class QualityGate:
     alpha_noise_threshold: ClassVar[float] = 0.18
-    bone_length_variance_threshold: ClassVar[float] = 0.4
-    symmetry_error_threshold: ClassVar[float] = 0.2
+    bone_length_variance_threshold: ClassVar[float] = 0.40
+    symmetry_error_threshold: ClassVar[float] = 0.20
+    alpha_noise_fail_multiplier: ClassVar[float] = 2.0
 
     @staticmethod
     def check_segmentation(
@@ -80,7 +81,7 @@ class QualityGate:
         alpha_noise = QualityGate._compute_alpha_noise(parts, parts_dir)
         if alpha_noise is not None:
             metrics["alpha_noise"] = alpha_noise
-            if alpha_noise >= QualityGate.alpha_noise_threshold * 2:
+            if alpha_noise >= QualityGate.alpha_noise_threshold * QualityGate.alpha_noise_fail_multiplier:
                 issues.append("Alpha noise is too high")
                 level = QualityLevel.FAIL
             elif alpha_noise > QualityGate.alpha_noise_threshold and level != QualityLevel.FAIL:
