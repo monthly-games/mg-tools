@@ -74,8 +74,21 @@ def resolve_monorepo_root() -> Path:
     return Path(__file__).resolve().parent.parent.parent.parent.parent
 
 
-def get_pipeline_output_dir(root: Path, character_key: str) -> Path:
-    """Return the pipeline output directory for a character."""
+def get_pipeline_output_dir(root: Path, character_key: str, pipeline_output_override: Optional[str] = None) -> Path:
+    """Return the pipeline output directory for a character.
+
+    Args:
+        root: Monorepo root path.
+        character_key: Character identifier (e.g. 'tower_archer').
+        pipeline_output_override: If set, use this as the base directory instead of
+            the default PIPELINE_OUTPUT_REL. Can be absolute or relative to root.
+            Expected structure: {override}/{character_key}/spine/
+    """
+    if pipeline_output_override:
+        base = Path(pipeline_output_override)
+        if not base.is_absolute():
+            base = root / base
+        return base / character_key / "spine"
     return root / PIPELINE_OUTPUT_REL / character_key / "spine"
 
 
@@ -209,6 +222,7 @@ def deploy_character(
     dry_run: bool,
     force: bool,
     skip_atlas_gen: bool = False,
+    pipeline_output_override: Optional[str] = None,
 ) -> DeployResult:
     """Deploy a single character's Spine assets to the game repo.
 
@@ -217,6 +231,8 @@ def deploy_character(
         char_info: Character dict from manifest.
         dry_run: If True, log actions without copying.
         force: If True, overwrite existing target directories.
+        skip_atlas_gen: If True, skip auto-generation of .atlas files.
+        pipeline_output_override: Override pipeline output base directory.
 
     Returns:
         DeployResult with outcome details.
@@ -224,7 +240,7 @@ def deploy_character(
     game_id = str(char_info.get("game_id", "UNKNOWN"))
     char_key = str(char_info.get("character_key", "unknown"))
 
-    source_dir = get_pipeline_output_dir(root, char_key)
+    source_dir = get_pipeline_output_dir(root, char_key, pipeline_output_override)
     target_dir = get_game_target_dir(root, game_id, char_key)
 
     result_base = {
@@ -495,6 +511,17 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Skip auto-generation of .atlas files if missing",
     )
+    parser.add_argument(
+        "--pipeline-output",
+        type=str,
+        metavar="PATH",
+        default=None,
+        help=(
+            "Override pipeline output directory (absolute or relative to monorepo root). "
+            "Default: repos/mg-tools/spine-ai-pipeline/output/{char_key}/spine. "
+            "Example: repos/mg-tools/spine-ai-pipeline/output/full_batch/pipeline_output"
+        ),
+    )
 
     target_group = parser.add_mutually_exclusive_group(required=True)
     target_group.add_argument(
@@ -578,7 +605,8 @@ def main() -> int:
 
         for char_info in chars:
             result = deploy_character(
-                root, char_info, args.dry_run, args.force, args.skip_atlas_gen
+                root, char_info, args.dry_run, args.force, args.skip_atlas_gen,
+                pipeline_output_override=args.pipeline_output,
             )
             all_results.append(result)
 
