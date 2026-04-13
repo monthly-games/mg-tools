@@ -12,16 +12,37 @@
 
 ```
 mg-tools/
+├── mg-cli/                 # MG Games 프로젝트 관리 CLI
 ├── spine-ai-pipeline/      # Spine 2D 캐릭터 자동 생성 파이프라인
 ├── asset-generator/        # 에셋 자동 생성 도구
 ├── batch-processor/        # 일괄 처리 스크립트
 ├── ci-tools/               # CI/CD 관련 도구
 ├── data-tools/             # 데이터 변환/검증 도구
 ├── docs/                   # 문서
+├── config/                 # 설정 파일
 └── scripts/                # 범용 스크립트
 ```
 
 ## 주요 도구
+
+### 0. MG-CLI (NEW)
+MG Games 프로젝트 관리 CLI 도구
+
+- Firebase 설정 자동화 (Analytics, Crashlytics, Remote Config)
+- 광고 SDK 설정 (AdMob)
+- 42개 게임 일괄 처리
+- 상태 모니터링 및 리포팅
+
+```bash
+# 전체 게임 상태 확인
+python -m mg-cli status
+
+# Firebase 초기화
+python -m mg-cli firebase init --game 0001
+
+# AdMob 설정
+python -m mg-cli ads setup --all
+```
 
 ### 1. Spine AI Pipeline
 AI를 활용한 Spine 2D 캐릭터 자동 생성 파이프라인
@@ -38,12 +59,21 @@ AI를 활용한 Spine 2D 캐릭터 자동 생성 파이프라인
 - 썸네일 생성
 - 스프라이트 시트 변환
 
+### 6. Prompt Extractor
+프롬프트 추출 자동화 도구
+
+- 마크다운 문서 파싱
+- 이미지/VFX/오디오 프롬프트 분류 및 추출
+- JSON 출력 지원
+
+
 ### 3. Batch Processor
 다수 파일/프로젝트 일괄 처리
 
+- **[New] 배경 제거 자동화 (`remove_bg.py`)**: AI를 활용한 이미지 누끼 따기
 - 이미지 최적화
 - 포맷 변환
-- 메타데이터 추출
+
 
 ### 4. CI Tools
 CI/CD 파이프라인 도구

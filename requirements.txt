@@ -8,8 +8,10 @@ rich>=13.0.0
 Pillow>=10.0.0
 opencv-python>=4.8.0
 
-# AI/ML (optional)
-# torch>=2.0.0
+# AI/ML
+torch>=2.4.0
+torchvision>=0.19.0
+ultralytics>=8.3.0
 # transformers>=4.30.0
 
 # API Clients

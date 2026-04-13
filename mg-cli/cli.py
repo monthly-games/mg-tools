@@ -7,6 +7,7 @@ from .config import CLIConfig
 from .services.game_scanner import GameScanner
 from .services.firebase_service import FirebaseService
 from .services.ads_service import AdsService
+from .commands.batch import BatchService
 
 
 # Load configuration
@@ -363,6 +364,93 @@ def config_set_env(env):
 
 # Alias for config command (avoid conflict with config module)
 main.add_command(config_cmd, name='config')
+
+
+# ============================================================================
+# Batch Commands
+# ============================================================================
+
+@main.group()
+def batch():
+    """Batch operations across multiple games."""
+    pass
+
+
+@batch.command('update-submodules')
+@click.option('--game', '-g', type=str, help='Game ID (e.g., 0025)')
+@click.option('--all', 'all_games', is_flag=True, help='Update all games')
+@click.option('--submodule', '-s', default='libs/mg_common_game', help='Submodule path')
+@click.option('--start', type=int, default=1, help='Start game ID (default: 1)')
+@click.option('--end', type=int, default=52, help='End game ID (default: 52)')
+def batch_update_submodules(game, all_games, submodule, start, end):
+    """Update submodules in game repositories."""
+    batch_svc = BatchService(config.repos_path)
+
+    if all_games:
+        game_ids = list(range(start, end + 1))
+    elif game:
+        game_ids = [int(game)]
+    else:
+        click.echo("Error: Specify --game or --all")
+        return
+
+    click.echo(f"\nUpdating submodule: {submodule}")
+    click.echo("=" * 60)
+
+    success_count = 0
+    for gid in game_ids:
+        success, msg = batch_svc.update_submodule(gid, submodule)
+        status = "[OK]" if success else "[--]"
+        click.echo(f"MG-{gid:04d}: {status} {msg}")
+        if success:
+            success_count += 1
+
+    click.echo(f"\nUpdated: {success_count}/{len(game_ids)}")
+
+
+@batch.command('fix-adapters')
+@click.option('--game', '-g', type=str, help='Game ID (e.g., 0001)')
+@click.option('--all', 'all_games', is_flag=True, help='Fix all games')
+@click.option('--type', 'adapter_type', type=click.Choice(['gacha', 'battlepass', 'both']),
+              default='both', help='Adapter type to fix')
+@click.option('--start', type=int, default=1, help='Start game ID')
+@click.option('--end', type=int, default=52, help='End game ID')
+def batch_fix_adapters(game, all_games, adapter_type, start, end):
+    """Fix gacha/battlepass adapters for new mg-common-game API."""
+    batch_svc = BatchService(config.repos_path)
+
+    if all_games:
+        game_ids = list(range(start, end + 1))
+    elif game:
+        game_ids = [int(game)]
+    else:
+        click.echo("Error: Specify --game or --all")
+        return
+
+    click.echo(f"\nFixing adapters: {adapter_type}")
+    click.echo("=" * 60)
+
+    gacha_fixed = 0
+    bp_fixed = 0
+
+    for gid in game_ids:
+        results = []
+
+        if adapter_type in ('gacha', 'both'):
+            success, msg = batch_svc.fix_gacha_adapter(gid)
+            if success:
+                gacha_fixed += 1
+            results.append(f"gacha: {msg}")
+
+        if adapter_type in ('battlepass', 'both'):
+            success, msg = batch_svc.fix_battlepass_adapter(gid)
+            if success:
+                bp_fixed += 1
+            results.append(f"battlepass: {msg}")
+
+        click.echo(f"MG-{gid:04d}: {', '.join(results)}")
+
+    click.echo(f"\nGacha fixed: {gacha_fixed}, BattlePass fixed: {bp_fixed}")
 
 
 if __name__ == '__main__':

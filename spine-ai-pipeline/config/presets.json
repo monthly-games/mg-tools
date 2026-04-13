@@ -21,28 +21,97 @@
   },
   "rig_types": {
     "humanoid": {
-      "bones": ["root", "hip", "spine", "chest", "neck", "head",
-                "shoulder_L", "arm_L", "forearm_L", "hand_L",
-                "shoulder_R", "arm_R", "forearm_R", "hand_R",
-                "thigh_L", "shin_L", "foot_L",
-                "thigh_R", "shin_R", "foot_R"],
-      "constraints": ["ik_arm_L", "ik_arm_R", "ik_leg_L", "ik_leg_R"]
+      "bones": [
+        "root",
+        "body",
+        "hip",
+        "torso",
+        "neck",
+        "head",
+        "shdr_L",
+        "arm_L",
+        "forearm_L",
+        "hand_L",
+        "shdr_R",
+        "arm_R",
+        "forearm_R",
+        "hand_R",
+        "thigh_L",
+        "shin_L",
+        "foot_L",
+        "thigh_R",
+        "shin_R",
+        "foot_R"
+      ],
+      "constraints": [
+        "leg_L_ik",
+        "leg_R_ik"
+      ]
     },
     "monster": {
-      "bones": ["root", "body", "head", "tail",
-                "leg_FL", "leg_FR", "leg_BL", "leg_BR"],
+      "bones": [
+        "root",
+        "body",
+        "head",
+        "tail",
+        "arm_L",
+        "arm_R",
+        "leg_L",
+        "leg_R"
+      ],
       "constraints": []
     },
     "simple": {
-      "bones": ["root", "body", "head"],
+      "bones": [
+        "root",
+        "body",
+        "head"
+      ],
       "constraints": []
     }
   },
   "animations": {
-    "combat": ["idle", "run", "attack1", "attack2", "hit", "die"],
-    "npc": ["idle", "walk", "talk", "gesture"],
-    "monster": ["idle", "move", "attack", "hit", "die"],
-    "ui_character": ["idle", "happy", "sad", "surprised"]
+    "combat": [
+      "idle",
+      "walk",
+      "run",
+      "attack",
+      "attack1",
+      "hit",
+      "die",
+      "death"
+    ],
+    "npc": [
+      "idle",
+      "walk",
+      "talk",
+      "gesture"
+    ],
+    "monster": [
+      "idle",
+      "move",
+      "attack",
+      "hit",
+      "die"
+    ],
+    "ui_character": [
+      "idle",
+      "happy",
+      "sad",
+      "surprised"
+    ],
+    "platformer": [
+      "idle",
+      "run",
+      "jump",
+      "fall"
+    ],
+    "flappy": [
+      "idle",
+      "flap",
+      "fall",
+      "hit"
+    ]
   },
   "output_settings": {
     "atlas_max_size": 2048,

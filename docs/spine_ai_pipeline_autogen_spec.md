@@ -91,6 +91,24 @@ char_001/
 
 ---
 
+### 3.5. 텍스처 패킹 (Texture Packing)
+> **New**: 런타임 최적화를 위해 분리된 파츠를 아틀라스(Atlas)로 병합
+
+- 도구: `pack_textures.py` (Custom Script)
+- 입력: 파츠 이미지 폴더
+- 출력: `character.atlas`, `character.png` (Texture Atlas)
+
+- 자동화 포인트:
+  - 분리된 파츠 PNG들을 하나의 텍스처 페이지로 병합
+  - Spine 런타임에서 사용할 좌표 데이터(.atlas) 생성
+
+```bash
+python scripts/pack_textures.py --input output/char_001/parts --output output/char_001/spine --name char_001
+```
+
+---
+
+
 ### 4. 리깅 자동 생성
 
 - 도구: Spine2D AI (GodMode 플랫폼)
@@ -121,6 +139,24 @@ char_001/
 
 ---
 
+### 5.5. 품질 관리 (Quality Control)
+> **New**: 생성된 에셋의 품질을 점수화하고 불량 에셋 필터링
+
+- 도구: `inspect_quality.py`
+- 입력: 캐릭터 처리 결과 폴더
+- 출력: `quality_report.md` (Pass/Fail 판정)
+
+- 검사 항목:
+  - 파츠 수량 및 크기 (너무 작거나 적으면 Fail)
+  - Spine 리소스 존재 여부 (skeleton.json/atlas)
+  - 배경 투명도 검사 (Clean BG Check)
+
+```bash
+python scripts/inspect_quality.py output/batch_run1
+```
+
+---
+
 ### 6. Spine 프로젝트 출력
 
 - 출력 경로 예시:
@@ -135,6 +171,8 @@ mg-game-000X/
 
 - 자동 썸네일 생성:
   - Spine CLI 또는 Viewer로 WebP / GIF 렌더링
+  - *Note: Spine CLI 렌더링은 라이선스가 있는 로컬 Spine 설치가 필요함 (Trial 버전 불가)*
+
 
 ---
 
@@ -175,9 +213,12 @@ mg-common-automation/
     scripts/
       gen_illustration.py
       split_parts.py
+      pack_textures.py  <-- New
+      inspect_quality.py <-- New
       rig_character.py
       animate_character.py
       export_spine.py
+
     config/
       presets.json
       styles.json
@@ -195,3 +236,23 @@ mg-common-automation/
 - Spine 출력 전 반드시 누락 파츠, 메시 연결 검증 필요
 
 ---
+
+## 📚 추천 순수 2D 프리셋 라이브러리 (2025년 기준)
+> Mixamo(3D)의 대안으로, Spine 2D 호환성이 높은 순수 2D 애니메이션 자원입니다.
+
+| 라이브러리/팩 이름 | 소스/링크 | 가격 | 형식 | 포함 애니메이션 예시 | 비고 |
+|---|---|---|---|---|---|
+| **Kenney Game Assets All-in-1** | [itch.io](https://kenney.itch.io/kenney-game-assets) | 무료 (풀팩 $19.95) | PNG Sprites | Idle, walk, jump | 60k+ 에셋, CC0 |
+| **Animated Halloween Goobers** | [itch.io](https://cgortz.itch.io/animated-halloween-goobers) | 무료 | Spine JSON/Atlas | Bouncy idle, walk | Spine 네이티브 |
+| **Dark Assassin** | [itch.io](https://bojedima.itch.io/darkassassin) | 무료 (데모) | Spine JSON | Idle, run, attack | 로그라이크 적합 |
+| **Spine Runtimes Samples** | [GitHub](https://github.com/EsotericSoftware/spine-runtimes) | 무료 | Spine JSON | Basic walk/run | 공식 샘플 |
+| **RetroStyleGames Pirate Pack** | [retrostylegames.com](https://retrostylegames.com/pirate-spine-pack) | 무료 | Spine JSON | Pirate idle/attack | 2025 무료 팩 |
+
+### 🛠️ Spine 2D 통합 팁 (자동화 보완)
+1. **임포트**: PNG 시퀀스 → Spine Editor > Image > Sequence Import → Rigging
+2. **런타임**:
+    - **Flame**: `flame_spine` 패키지 사용 (JSON/Atlas 로드)
+    - **Unity**: Spine Unity 런타임 무료 사용
+3. **자동화 전략**:
+    - PNG 시퀀스를 `pack_textures.py`로 아틀라스화
+    - Python 스크립트로 Spine JSON 템플릿에 이미지 매핑
