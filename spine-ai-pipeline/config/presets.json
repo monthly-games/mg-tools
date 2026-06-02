@@ -1,20 +1,20 @@
 {
   "styles": {
     "pixel_anime": {
-      "prompt_prefix": "pixel art anime style",
-      "negative_prompt": "realistic, 3d, photograph",
+      "prompt_prefix": "pixel art anime style, standard T-pose, standing facing front, full body clear limbs",
+      "negative_prompt": "realistic, 3d, photograph, sitting, crossed arms, overlapping limbs",
       "steps": 30,
       "cfg_scale": 7
     },
     "chibi": {
-      "prompt_prefix": "chibi style, cute, big head",
-      "negative_prompt": "realistic, detailed face",
+      "prompt_prefix": "chibi style, cute, big head, standard T-pose, standing facing front",
+      "negative_prompt": "realistic, detailed face, complex posing",
       "steps": 25,
       "cfg_scale": 8
     },
     "semi_realistic": {
-      "prompt_prefix": "semi-realistic anime style, detailed",
-      "negative_prompt": "low quality, blurry",
+      "prompt_prefix": "semi-realistic anime style, detailed, standard T-pose, standing facing front, clear separation of limbs",
+      "negative_prompt": "low quality, blurry, overlapping parts",
       "steps": 40,
       "cfg_scale": 7
     }
@@ -28,6 +28,7 @@
         "torso",
         "neck",
         "head",
+        "eye_ctrl",
         "shdr_L",
         "arm_L",
         "forearm_L",
@@ -45,7 +46,9 @@
       ],
       "constraints": [
         "leg_L_ik",
-        "leg_R_ik"
+        "leg_R_ik",
+        "hair_physics",
+        "cloth_physics"
       ]
     },
     "monster": {

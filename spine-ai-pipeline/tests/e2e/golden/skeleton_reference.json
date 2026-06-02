@@ -1,0 +1,25 @@
+{
+  "spine": "4.1",
+  "bones": [
+    {"name": "root"},
+    {"name": "hip", "parent": "root", "length": 30},
+    {"name": "spine", "parent": "hip", "length": 50},
+    {"name": "chest", "parent": "spine", "length": 40},
+    {"name": "head", "parent": "chest", "length": 60},
+    {"name": "arm_L", "parent": "chest", "length": 40},
+    {"name": "arm_R", "parent": "chest", "length": 40},
+    {"name": "leg_L", "parent": "hip", "length": 70},
+    {"name": "leg_R", "parent": "hip", "length": 70}
+  ],
+  "animations": {
+    "idle": {},
+    "walk": {},
+    "attack": {}
+  },
+  "skins": [{"name": "default", "attachments": {}}],
+  "slots": [],
+  "ik": [],
+  "transform": [],
+  "path": [],
+  "physics": []
+}

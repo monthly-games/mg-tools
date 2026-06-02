@@ -1,0 +1,210 @@
+{
+  "skeleton": {
+    "hash": "chibi_template",
+    "spine": "4.1",
+    "x": 0,
+    "y": 0,
+    "width": 512,
+    "height": 512
+  },
+  "bones": [
+    {
+      "name": "root"
+    },
+    {
+      "name": "body",
+      "parent": "root",
+      "length": 60,
+      "x": 0,
+      "y": 80
+    },
+    {
+      "name": "head",
+      "parent": "body",
+      "length": 100,
+      "x": 0,
+      "y": 60
+    },
+    {
+      "name": "arm_L",
+      "parent": "body",
+      "length": 40,
+      "x": 30,
+      "y": 40,
+      "rotation": -45
+    },
+    {
+      "name": "arm_R",
+      "parent": "body",
+      "length": 40,
+      "x": -30,
+      "y": 40,
+      "rotation": -135
+    },
+    {
+      "name": "leg_L",
+      "parent": "body",
+      "length": 40,
+      "x": 20,
+      "y": 0,
+      "rotation": -90
+    },
+    {
+      "name": "leg_R",
+      "parent": "body",
+      "length": 40,
+      "x": -20,
+      "y": 0,
+      "rotation": -90
+    }
+  ],
+  "slots": [
+    {
+      "name": "body",
+      "bone": "body",
+      "attachment": "body"
+    },
+    {
+      "name": "head",
+      "bone": "head",
+      "attachment": "head"
+    },
+    {
+      "name": "arm_L",
+      "bone": "arm_L",
+      "attachment": "arm_L"
+    },
+    {
+      "name": "arm_R",
+      "bone": "arm_R",
+      "attachment": "arm_R"
+    },
+    {
+      "name": "leg_L",
+      "bone": "leg_L",
+      "attachment": "leg_L"
+    },
+    {
+      "name": "leg_R",
+      "bone": "leg_R",
+      "attachment": "leg_R"
+    }
+  ],
+  "skins": {
+    "default": {
+      "head": {
+        "head": {
+          "x": 0,
+          "y": 50,
+          "rotation": 0,
+          "width": 100,
+          "height": 100,
+          "scaleX": 1.5,
+          "scaleY": 1.5,
+          "path": "head"
+        }
+      },
+      "body": {
+        "body": {
+          "x": 0,
+          "y": 30,
+          "rotation": 0,
+          "width": 100,
+          "height": 100,
+          "scaleX": 0.8,
+          "scaleY": 0.8,
+          "path": "body"
+        }
+      },
+      "arm_L": {
+        "arm_L": {
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "width": 50,
+          "height": 100,
+          "scaleX": 2.0,
+          "scaleY": 1.0,
+          "path": "arm_L"
+        }
+      },
+      "arm_R": {
+        "arm_R": {
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "width": 50,
+          "height": 100,
+          "scaleX": 2.0,
+          "scaleY": 1.0,
+          "path": "arm_R"
+        }
+      },
+      "leg_L": {
+        "leg_L": {
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "width": 50,
+          "height": 100,
+          "scaleX": 2.0,
+          "scaleY": 1.0,
+          "path": "leg_L"
+        }
+      },
+      "leg_R": {
+        "leg_R": {
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "width": 50,
+          "height": 100,
+          "scaleX": 2.0,
+          "scaleY": 1.0,
+          "path": "leg_R"
+        }
+      }
+    }
+  },
+  "animations": {
+    "idle": {
+      "bones": {
+        "head": {
+          "rotate": [
+            {
+              "time": 0,
+              "angle": 0
+            },
+            {
+              "time": 1,
+              "angle": 5
+            },
+            {
+              "time": 2,
+              "angle": 0
+            }
+          ]
+        },
+        "body": {
+          "scale": [
+            {
+              "time": 0,
+              "x": 1,
+              "y": 1
+            },
+            {
+              "time": 1,
+              "x": 1.05,
+              "y": 0.95
+            },
+            {
+              "time": 2,
+              "x": 1,
+              "y": 1
+            }
+          ]
+        }
+      }
+    }
+  }
+}

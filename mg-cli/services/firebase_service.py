@@ -233,12 +233,12 @@ class FirebaseService:
         return {
             'game_id': game_info.game_id,
             'firebase_options': game_info.has_firebase_options,
-            'google_services_json': game_info.has_google_services_json,
-            'google_service_info_plist': game_info.has_google_service_info_plist,
+            'google_services_json': game_info.has_google_services,
+            'google_service_info_plist': game_info.has_google_service_info,
             'deps_enabled': game_info.firebase_deps_enabled,
             'ready': all([
                 game_info.has_firebase_options,
-                game_info.has_google_services_json,
+                game_info.has_google_services,
                 game_info.firebase_deps_enabled
             ])
         }

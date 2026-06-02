@@ -167,10 +167,11 @@ def validate_source(source_dir: Path) -> Optional[str]:
     if not source_dir.is_dir():
         return f"Source path is not a directory: {source_dir}"
 
-    # Check skeleton.json
-    skeleton = source_dir / REQUIRED_SKELETON
-    if not skeleton.exists():
-        return f"Missing {REQUIRED_SKELETON} in {source_dir}"
+    # Check skeleton (JSON or SKEL)
+    has_json = (source_dir / "skeleton.json").exists()
+    has_skel = (source_dir / "skeleton.skel").exists()
+    if not (has_json or has_skel):
+        return f"Missing skeleton (skeleton.json or .skel) in {source_dir}"
 
     # Check atlas files
     atlas_files = list(source_dir.glob("*.atlas"))
@@ -205,12 +206,15 @@ def count_files(directory: Path) -> int:
 def _renamed(filename: str, char_key: str) -> str:
     """Compute the destination filename, renaming skeleton/atlas files.
 
-    - skeleton.json → {char_key}.json
-    - *.atlas → {char_key}.atlas
+    - skeleton.json -> {char_key}.json
+    - skeleton.skel -> {char_key}.skel
+    - *.atlas -> {char_key}.atlas
     - All other files (PNGs) keep original names.
     """
-    if filename == REQUIRED_SKELETON:
+    if filename == "skeleton.json":
         return f"{char_key}.json"
+    if filename == "skeleton.skel":
+        return f"{char_key}.skel"
     if filename.endswith(".atlas"):
         return f"{char_key}.atlas"
     return filename

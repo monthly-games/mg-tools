@@ -50,14 +50,14 @@ def generate_spine_skeleton(parts_metadata: Dict, rig_preset: Dict) -> Dict[str,
     skeleton = {
         "skeleton": {
             "hash": "",
-            "spine": "4.1",
+            "spine": "4.2.0",
             "x": 0,
             "y": 0,
             "width": 512,
             "height": 512,
         },
-        "bones": [{"name": bone, "parent": "root" if bone != "root" else None}
-                  for bone in bones],
+        "bones": [{"name": bone, "parent": "head" if bone == "eye_ctrl" else ("root" if bone != "root" else None)} for bone in bones + (["eye_ctrl"] if "head" in bones and "eye_ctrl" not in bones else [])],
+        "physics": [], # TODO: add dynamic physics loop
         "slots": [],
         "skins": {"default": {}},
         "animations": {},
@@ -290,7 +290,7 @@ def generate_with_pose_estimation(parts_dir: Path, output_dir: Path, preset: str
         skeleton = {
             "skeleton": {
                 "hash": "", 
-                "spine": "4.1", 
+                "spine": "4.2.0", 
                 "x": 0, 
                 "y": 0, 
                 "width": image_height, 
@@ -504,7 +504,7 @@ def generate_with_template(parts_dir: Path, output_dir: Path, template_name: str
         # 기본 Spine 구조 추가
         if "skeleton" not in skeleton:
             skeleton["skeleton"] = {
-                "hash": "", "spine": "4.1", 
+                "hash": "", "spine": "4.2.0", 
                 "x": 0, "y": 0, "width": 1000, "height": 1000
             }
         if "slots" not in skeleton: skeleton["slots"] = []
@@ -545,7 +545,7 @@ def generate_with_template(parts_dir: Path, output_dir: Path, template_name: str
                  skeleton = copy.deepcopy(skeleton_template)
                  if "skeleton" not in skeleton:
                     skeleton["skeleton"] = {
-                        "hash": "", "spine": "4.1", 
+                        "hash": "", "spine": "4.2.0", 
                         "x": 0, "y": 0, "width": 1000, "height": 1000
                     }
                  if "slots" not in skeleton: skeleton["slots"] = []

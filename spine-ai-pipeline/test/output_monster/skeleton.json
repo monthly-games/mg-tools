@@ -1,0 +1,266 @@
+{
+  "skeleton": {
+    "hash": "monster_template",
+    "spine": "4.1",
+    "x": 0,
+    "y": 0,
+    "width": 1024,
+    "height": 1024
+  },
+  "bones": [
+    {
+      "name": "root"
+    },
+    {
+      "name": "body",
+      "parent": "root",
+      "length": 150,
+      "x": 0,
+      "y": 100,
+      "rotation": 0
+    },
+    {
+      "name": "head",
+      "parent": "body",
+      "length": 100,
+      "x": 150,
+      "y": 50,
+      "rotation": 30
+    },
+    {
+      "name": "tail",
+      "parent": "body",
+      "length": 100,
+      "x": -100,
+      "y": 0,
+      "rotation": 180
+    },
+    {
+      "name": "leg_FL",
+      "parent": "body",
+      "length": 80,
+      "x": 100,
+      "y": -20,
+      "rotation": -90
+    },
+    {
+      "name": "foot_FL",
+      "parent": "leg_FL",
+      "length": 40,
+      "x": 80,
+      "y": 0,
+      "rotation": 90
+    },
+    {
+      "name": "leg_FR",
+      "parent": "body",
+      "length": 80,
+      "x": 100,
+      "y": -20,
+      "rotation": -90
+    },
+    {
+      "name": "foot_FR",
+      "parent": "leg_FR",
+      "length": 40,
+      "x": 80,
+      "y": 0,
+      "rotation": 90
+    },
+    {
+      "name": "leg_BL",
+      "parent": "body",
+      "length": 80,
+      "x": -100,
+      "y": -20,
+      "rotation": -90
+    },
+    {
+      "name": "foot_BL",
+      "parent": "leg_BL",
+      "length": 40,
+      "x": 80,
+      "y": 0,
+      "rotation": 90
+    },
+    {
+      "name": "leg_BR",
+      "parent": "body",
+      "length": 80,
+      "x": -100,
+      "y": -20,
+      "rotation": -90
+    },
+    {
+      "name": "foot_BR",
+      "parent": "leg_BR",
+      "length": 40,
+      "x": 80,
+      "y": 0,
+      "rotation": 90
+    }
+  ],
+  "slots": [
+    {
+      "name": "body",
+      "bone": "body",
+      "attachment": "body"
+    },
+    {
+      "name": "head",
+      "bone": "head",
+      "attachment": "head"
+    },
+    {
+      "name": "tail",
+      "bone": "tail",
+      "attachment": "tail"
+    },
+    {
+      "name": "leg_FL",
+      "bone": "leg_FL",
+      "attachment": "leg_FL"
+    },
+    {
+      "name": "leg_FR",
+      "bone": "leg_FR",
+      "attachment": "leg_FR"
+    },
+    {
+      "name": "leg_BL",
+      "bone": "leg_BL",
+      "attachment": "leg_BL"
+    },
+    {
+      "name": "leg_BR",
+      "bone": "leg_BR",
+      "attachment": "leg_BR"
+    }
+  ],
+  "skins": {
+    "default": {
+      "body": {
+        "body": {
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "width": 200,
+          "height": 100,
+          "scaleX": 1.5,
+          "scaleY": 1.5,
+          "path": "body"
+        }
+      },
+      "head": {
+        "head": {
+          "x": 50,
+          "y": 0,
+          "rotation": 0,
+          "width": 100,
+          "height": 100,
+          "scaleX": 1.0,
+          "scaleY": 1.0,
+          "path": "head"
+        }
+      },
+      "tail": {
+        "tail": {
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "width": 100,
+          "height": 50,
+          "scaleX": 1.0,
+          "scaleY": 2.0,
+          "path": "tail"
+        }
+      },
+      "leg_FL": {
+        "leg_FL": {
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "width": 50,
+          "height": 100,
+          "scaleX": 2.0,
+          "scaleY": 1.0,
+          "path": "leg_FL"
+        }
+      },
+      "leg_FR": {
+        "leg_FR": {
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "width": 50,
+          "height": 100,
+          "scaleX": 2.0,
+          "scaleY": 1.0,
+          "path": "leg_FR"
+        }
+      },
+      "leg_BL": {
+        "leg_BL": {
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "width": 50,
+          "height": 100,
+          "scaleX": 2.0,
+          "scaleY": 1.0,
+          "path": "leg_BL"
+        }
+      },
+      "leg_BR": {
+        "leg_BR": {
+          "x": 0,
+          "y": 0,
+          "rotation": 0,
+          "width": 50,
+          "height": 100,
+          "scaleX": 2.0,
+          "scaleY": 1.0,
+          "path": "leg_BR"
+        }
+      }
+    }
+  },
+  "animations": {
+    "idle": {
+      "bones": {
+        "body": {
+          "translate": [
+            {
+              "time": 0,
+              "y": 0
+            },
+            {
+              "time": 1,
+              "y": 5
+            },
+            {
+              "time": 2,
+              "y": 0
+            }
+          ]
+        },
+        "tail": {
+          "rotate": [
+            {
+              "time": 0,
+              "angle": 0
+            },
+            {
+              "time": 1,
+              "angle": 10
+            },
+            {
+              "time": 2,
+              "angle": 0
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,51 @@
+[
+  {
+    "character_key": "gold_bird",
+    "status": "resolved",
+    "priority": "medium",
+    "reason": "Deployed via template fallback after SAM segmentation failure",
+    "evidence": ".sisyphus/evidence/spine-template-fallback-20260418.json"
+  },
+  {
+    "character_key": "red_bird",
+    "status": "resolved",
+    "priority": "medium",
+    "reason": "Deployed via template fallback after SAM segmentation failure",
+    "evidence": ".sisyphus/evidence/spine-template-fallback-20260418.json"
+  },
+  {
+    "character_key": "witch_ice",
+    "status": "resolved",
+    "priority": "medium",
+    "reason": "Deployed via template fallback after SAM segmentation failure",
+    "evidence": ".sisyphus/evidence/spine-template-fallback-20260418.json"
+  },
+  {
+    "character_key": "forest_druid",
+    "status": "resolved",
+    "priority": "medium",
+    "reason": "Existing retry output passed quality gate; atlas generated and deployed",
+    "evidence": ".sisyphus/evidence/spine-targeted-deploy-20260418.json"
+  },
+  {
+    "character_key": "ice_guardian",
+    "status": "resolved",
+    "priority": "medium",
+    "reason": "Existing retry output passed quality gate; atlas generated and deployed",
+    "evidence": ".sisyphus/evidence/spine-targeted-deploy-20260418.json"
+  },
+  {
+    "character_key": "ice_warrior",
+    "status": "resolved",
+    "priority": "medium",
+    "reason": "Existing retry output passed quality gate; atlas generated and deployed",
+    "evidence": ".sisyphus/evidence/spine-targeted-deploy-20260418.json"
+  },
+  {
+    "character_key": "light_cleric",
+    "status": "resolved",
+    "priority": "medium",
+    "reason": "Deployed via template fallback after SAM segmentation failure",
+    "evidence": ".sisyphus/evidence/spine-template-fallback-20260418.json"
+  }
+]

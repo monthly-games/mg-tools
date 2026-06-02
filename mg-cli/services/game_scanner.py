@@ -8,7 +8,7 @@ import os
 import re
 from pathlib import Path
 from dataclasses import dataclass, field
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Sequence
 from enum import Enum
 
 from ..config import DEFAULT_REPOS_PATH, SUBMODULE_PATHS
@@ -94,40 +94,50 @@ class GameScanner:
     """Scans MG games repository for game information"""
 
     # Known game IDs (from existing scripts)
-    ALL_GAME_IDS = [
-        "0001", "0002", "0003", "0004", "0005", "0006", "0007", "0008", "0009", "0010",
-        "0011", "0012", "0013", "0014", "0015", "0016", "0017", "0018", "0019", "0020",
-        "0021", "0022", "0023", "0024", "0025", "0026", "0027", "0028", "0029", "0030",
-        "0031", "0032", "0033", "0034", "0036", "0037", "0038",
-        "0048", "0049", "0050", "0051", "0052"
-    ]
+    ALL_GAME_IDS = [f"{game_id:04d}" for game_id in range(1, 53)]
 
     def __init__(self, repos_path: Optional[Path] = None):
         self.repos_path = repos_path or DEFAULT_REPOS_PATH
         self._games: Dict[str, GameInfo] = {}
 
-    def scan_all(self, force_refresh: bool = False) -> List[GameInfo]:
+    def _normalize_game_id(self, game_id: int | str) -> str:
+        """Normalize numeric and string game IDs to four digits."""
+        return str(game_id).zfill(4)
+
+    def scan_all(
+        self,
+        game_ids: Optional[Sequence[int | str]] = None,
+        force_refresh: bool = False,
+    ) -> List[GameInfo]:
         """Scan all known games and return info list"""
-        if self._games and not force_refresh:
+        if isinstance(game_ids, bool):
+            force_refresh = game_ids
+            game_ids = None
+
+        target_ids = [self._normalize_game_id(game_id) for game_id in (game_ids or self.ALL_GAME_IDS)]
+
+        if game_ids is None and self._games and not force_refresh:
             return list(self._games.values())
 
-        self._games.clear()
+        if game_ids is None:
+            self._games.clear()
 
-        for game_id in self.ALL_GAME_IDS:
+        games = []
+        for game_id in target_ids:
             game_info = self._scan_game(game_id)
             self._games[game_id] = game_info
+            games.append(game_info)
 
-        return list(self._games.values())
+        return games
 
-    def scan_game(self, game_id: str) -> Optional[GameInfo]:
+    def scan_game(self, game_id: int | str) -> Optional[GameInfo]:
         """Scan a single game by ID"""
-        # Normalize game_id
-        game_id = game_id.zfill(4)
+        game_id = self._normalize_game_id(game_id)
         return self._scan_game(game_id)
 
-    def get_game(self, game_id: str) -> Optional[GameInfo]:
+    def get_game(self, game_id: int | str) -> Optional[GameInfo]:
         """Get cached game info or scan if not cached"""
-        game_id = game_id.zfill(4)
+        game_id = self._normalize_game_id(game_id)
         if game_id not in self._games:
             self._games[game_id] = self._scan_game(game_id)
         return self._games.get(game_id)
@@ -253,9 +263,9 @@ class GameScanner:
         except Exception:
             return False
 
-    def get_summary(self) -> Dict[str, Any]:
+    def get_summary(self, games: Optional[List[GameInfo]] = None) -> Dict[str, Any]:
         """Get summary statistics"""
-        games = self.scan_all()
+        games = games or self.scan_all()
 
         existing = [g for g in games if g.exists]
         firebase_ready = [g for g in existing if g.firebase_ready]
@@ -271,10 +281,19 @@ class GameScanner:
 
         return {
             "total_registered": len(self.ALL_GAME_IDS),
+            "total_configured": len(games),
             "existing": len(existing),
             "missing": len(games) - len(existing),
             "firebase_ready": len(firebase_ready),
             "ads_ready": len(ads_ready),
+            "firebase": {
+                "with_options": sum(1 for g in existing if g.has_firebase_options),
+                "with_google_services": sum(1 for g in existing if g.has_google_services),
+                "deps_enabled": sum(1 for g in existing if g.firebase_deps_enabled),
+            },
+            "ads": {
+                "with_admob": sum(1 for g in existing if g.has_admob_android),
+            },
             "by_type": {k: len(v) for k, v in by_type.items()},
             "by_submodule": {k: len(v) for k, v in by_submodule.items()},
         }

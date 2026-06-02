@@ -2,13 +2,13 @@
 Entry point for mg_cli package.
 
 Usage:
-    python -m mg-cli [command] [options]
+    python -m mg_cli [command] [options]
 
 Or via installed command:
     mg-cli [command] [options]
 """
 
-from .cli import cli
+from .cli import main
 
 if __name__ == "__main__":
-    cli()
+    main()

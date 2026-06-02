@@ -11,6 +11,7 @@ segment-anything-2>=1.0.0   # SAM2 segmentation (or sam2 if available)
 
 # Image Processing
 Pillow>=10.0.0              # PIL image processing
+psd-tools>=1.10.0           # PSD layer import for See-through/Stretchy outputs
 opencv-python>=4.8.0        # OpenCV computer vision library
 scipy>=1.11.0               # Scientific computing (Delaunay triangulation)
 matplotlib>=3.7.0           # Plotting and visualization

@@ -110,6 +110,17 @@ class AdsService:
 
         return True, "; ".join(results)
 
+    def setup_game(
+        self,
+        game_info: GameInfo,
+        test_mode: Optional[bool] = None,
+        dry_run: bool = False,
+    ) -> Tuple[bool, str]:
+        """Compatibility wrapper used by the click commands."""
+        if dry_run:
+            return True, f"[DRY RUN] Would setup AdMob for MG-{game_info.game_id}"
+        return self.setup_ads(game_info)
+
     def _enable_ads_deps(self, game_dir: Path) -> Tuple[bool, str]:
         """Enable google_mobile_ads dependency in pubspec.yaml"""
         pubspec_path = game_dir / "pubspec.yaml"
@@ -214,3 +225,24 @@ class AdsService:
 
         plist_path.write_text(content, encoding="utf-8")
         return True, "configured"
+
+    def get_status(self, game_info: GameInfo) -> dict:
+        """Get AdMob configuration status for a game."""
+        android_id = None
+        manifest_path = game_info.path / "game" / "android" / "app" / "src" / "main" / "AndroidManifest.xml"
+        if manifest_path.exists():
+            content = manifest_path.read_text(encoding="utf-8")
+            match = re.search(
+                r'android:name="com\.google\.android\.gms\.ads\.APPLICATION_ID"\s+android:value="([^"]+)"',
+                content,
+            )
+            if match:
+                android_id = match.group(1)
+
+        return {
+            "game_id": game_info.game_id,
+            "has_config": game_info.has_admob_android,
+            "android_app_id": android_id,
+            "deps_enabled": game_info.ads_deps_enabled,
+            "ready": game_info.ads_ready,
+        }

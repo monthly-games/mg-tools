@@ -3,11 +3,18 @@
 import click
 from pathlib import Path
 
-from .config import CLIConfig
-from .services.game_scanner import GameScanner
-from .services.firebase_service import FirebaseService
-from .services.ads_service import AdsService
-from .commands.batch import BatchService
+if __package__:
+    from .config import CLIConfig
+    from .services.game_scanner import GameScanner
+    from .services.firebase_service import FirebaseService
+    from .services.ads_service import AdsService
+    from .commands.batch import BatchService
+else:
+    from mg_cli.config import CLIConfig
+    from mg_cli.services.game_scanner import GameScanner
+    from mg_cli.services.firebase_service import FirebaseService
+    from mg_cli.services.ads_service import AdsService
+    from mg_cli.commands.batch import BatchService
 
 
 # Load configuration

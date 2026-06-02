@@ -4,13 +4,14 @@ Configuration management for MG-CLI
 
 import os
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Optional, Dict, Any
 import yaml
 
 # Default paths
 DEFAULT_BASE_PATH = Path(r"d:\mg-games")
 DEFAULT_REPOS_PATH = DEFAULT_BASE_PATH / "repos"
-DEFAULT_CONFIG_PATH = Path(__file__).parent.parent / "config"
+DEFAULT_CONFIG_PATH = DEFAULT_BASE_PATH / "config"
 
 # Game ID patterns
 GAME_ID_PATTERN = r"mg-game-(\d{4})"
@@ -43,6 +44,11 @@ ADMOB_TEST_IDS = {
 
 class Config:
     """MG-CLI configuration manager"""
+
+    @classmethod
+    def load(cls, config_path: Optional[Path] = None) -> "Config":
+        """Load CLI configuration."""
+        return cls(config_path)
 
     def __init__(self, config_path: Optional[Path] = None):
         self.config_path = config_path or DEFAULT_CONFIG_PATH
@@ -88,6 +94,10 @@ class Config:
         with open(config_file, "w", encoding="utf-8") as f:
             yaml.dump(self._config, f, default_flow_style=False)
 
+    def save(self):
+        """Compatibility alias used by the click commands."""
+        self.save_config()
+
     @property
     def environment(self) -> str:
         return self._config.get("environment", "dev")
@@ -95,6 +105,32 @@ class Config:
     @environment.setter
     def environment(self, value: str):
         self._config["environment"] = value
+
+    @property
+    def env(self) -> str:
+        """Compatibility alias for the current environment."""
+        return self.environment
+
+    @env.setter
+    def env(self, value: str):
+        self.environment = value
+
+    @property
+    def firebase(self) -> SimpleNamespace:
+        """Firebase settings exposed with the names used by the CLI output."""
+        firebase_cfg = self.firebase_config
+        return SimpleNamespace(
+            project_id_pattern=firebase_cfg.get("project_pattern", "mg-game-{game_id}"),
+            dev_project=firebase_cfg.get("shared_project", FIREBASE_TEST_PROJECT),
+        )
+
+    @property
+    def ads(self) -> SimpleNamespace:
+        """AdMob test IDs exposed with the names used by the CLI output."""
+        return SimpleNamespace(
+            android_app_id_test=ADMOB_TEST_IDS["android"]["app_id"],
+            ios_app_id_test=ADMOB_TEST_IDS["ios"]["app_id"],
+        )
 
     @property
     def firebase_config(self) -> Dict[str, Any]:
@@ -126,6 +162,16 @@ class Config:
             return firebase_cfg.get("shared_project", FIREBASE_TEST_PROJECT)
         pattern = firebase_cfg.get("project_pattern", "mg-game-{game_id}")
         return pattern.format(game_id=game_id)
+
+    def get_game_ids(self) -> list[int]:
+        """Return the configured MG game ID range."""
+        configured = self._config.get("games", {}).get("ids")
+        if configured:
+            return [int(game_id) for game_id in configured]
+        return list(range(1, 53))
+
+
+CLIConfig = Config
 
 
 # Global config instance

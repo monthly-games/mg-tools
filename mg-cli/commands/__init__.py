@@ -4,9 +4,20 @@ MG-CLI Commands
 Command modules for Firebase, Ads, CI/CD, Infrastructure, and Batch operations
 """
 
-from .analytics import analytics_cmd
-from .cicd import cicd_cmd
-from .infra import infra_cmd
-from .batch import batch
+from .analytics import analytics, marketing
+from .cicd import cicd
+from .infra import infra
 
-__all__ = ['analytics_cmd', 'cicd_cmd', 'infra_cmd', 'batch']
+analytics_cmd = analytics
+cicd_cmd = cicd
+infra_cmd = infra
+
+__all__ = [
+    'analytics',
+    'analytics_cmd',
+    'marketing',
+    'cicd',
+    'cicd_cmd',
+    'infra',
+    'infra_cmd',
+]
